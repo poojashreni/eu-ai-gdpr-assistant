@@ -166,3 +166,19 @@ The last row is generous to naive: it counts a hit if the expected article's tex
 **Check yourself:** (1) Why would calling the chain directly from Streamlit weaken the rate limit? (2) What happens to the last answer when you click "Ask" again with an empty box? (3) Why is the error text taken from the API's `detail` field instead of written again in the UI?
 
 ## §8 Docker, CI, deployment
+
+**Code:** `Dockerfile`, `start.sh`, `.dockerignore`, `.github/workflows/ci.yml`, `docs/DEPLOY.md`
+
+**What Docker does here.** A Docker image is a sealed folder containing the operating system pieces, Python, our libraries and our code, so the app runs the same on your Mac, in CI and on Hugging Face. Hugging Face Spaces simply builds our `Dockerfile` and starts the container. Our image is built in a deliberate order: install the libraries first (this layer is cached, so a code change does not reinstall everything), copy the code and the raw laws, then run `parse` and `index` *while building*. That bakes the embedding model and the finished search index into the image. The result: when the Space starts it does not download a model or spend minutes embedding 3,000 chunks, it just starts.
+
+**Two processes, one container.** `start.sh` starts the FastAPI service on `127.0.0.1:8000` (only reachable from inside the container), waits until `/health` answers, then runs Streamlit on port 7860, the one port the outside world sees. The UI talks to the API over the inside address. That keeps the rate limit and the cap in the API, as designed in the API stage.
+
+**CPU-only torch.** The normal PyTorch download for Linux includes about 2 GB of GPU (CUDA) libraries. A free Space has no GPU, so they would only waste space and build time. In `pyproject.toml` we tell uv: on Linux take torch from PyTorch's CPU index; on macOS use the normal wheel. `uv.lock` records both, so `uv sync --frozen` gives the same versions everywhere.
+
+**Non-root user.** Hugging Face runs containers as user id 1000, so the image creates that user and puts the app, the model cache (`HF_HOME`) and the index in its home folder, where it can write. Running as non-root is also just good security practice.
+
+**What CI does.** CI (continuous integration) means a robot repeats your checks on every push. `ci.yml` has three jobs. `test` runs on every push and pull request: install from the lock file, `ruff` (style and simple bugs), `pytest`. `eval-smoke` runs only on `main` and only if you stored a `GOOGLE_API_KEY` secret: it builds the index and asks 5 gold questions through the real model, to catch a broken prompt or key. `deploy` runs only on `main` and only if `HF_TOKEN` and `HF_SPACE_ID` exist: it pushes the code to the Space, which rebuilds. Missing secrets mean "skip", not "fail", so a fresh fork stays green. Secrets are never printed in logs and never live in the repo.
+
+**Why the README starts with `---`.** Hugging Face reads its settings (Docker SDK, port 7860) from a small block at the top of `README.md`. GitHub shows it as a little table.
+
+**Check yourself:** (1) Why do we run `index` during the image build rather than at start? (2) Why does the API listen on 127.0.0.1 but Streamlit on 0.0.0.0? (3) What happens in CI if `HF_TOKEN` is not set?
