@@ -202,7 +202,8 @@ def test_page_shows_title_and_notices(app):
 
 
 def test_example_question_renders_answer_with_citation_link(app, monkeypatch):
-    monkeypatch.setattr(ui, "ask", lambda q, client=None, forwarded_for=None: ui.AskResult(answer=Answer(**ANSWER)))
+    fake = ui.AskResult(answer=Answer(**ANSWER))
+    monkeypatch.setattr(ui, "ask", lambda q, client=None, forwarded_for=None: fake)
     app.run()
     next(b for b in app.button if b.label == ui.EXAMPLES[2][1]).click().run()
     assert not app.exception
@@ -214,7 +215,9 @@ def test_error_is_shown_as_message(app, monkeypatch):
     monkeypatch.setattr(
         ui,
         "ask",
-        lambda q, client=None, forwarded_for=None: ui.AskResult(error="Too many questions, please try again later."),
+        lambda q, client=None, forwarded_for=None: ui.AskResult(
+            error="Too many questions, please try again later."
+        ),
     )
     app.run()
     app.text_input[0].set_value("anything")
