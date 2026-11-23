@@ -35,8 +35,10 @@ st.write(
     "and cite the exact provisions, with links to EUR-Lex."
 )
 
-st.text_input("Your question", key="question", max_chars=1000)
-if st.button("Ask", type="primary"):
+with st.form("ask_form", border=False):
+    st.text_input("Your question", key="question", max_chars=1000)
+    submitted = st.form_submit_button("Ask", type="primary")
+if submitted:
     _run(st.session_state["question"])
 
 st.caption("Try an example:")
@@ -64,7 +66,7 @@ if result is not None:
         if answer.refused:
             st.info(answer.answer)
         else:
-            st.markdown(answer.answer)
+            st.markdown(ui.safe_answer_markdown(answer.answer))
             with st.expander("Sources", expanded=True):
                 for line in ui.citation_links(answer):
                     st.markdown(f"- {line}")

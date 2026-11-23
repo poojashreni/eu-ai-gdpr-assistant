@@ -1,6 +1,8 @@
 """Pure logic for the Streamlit page: call the API, turn results and errors into display data."""
 
+import re
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 import httpx
 
@@ -29,6 +31,34 @@ class AskResult:
     error: str | None = None
 
 
+_MARKDOWN_PUNCTUATION = re.compile(r"([\\`*_{}\[\]()<>#+\-.!|~$&:\"'=@/%^])")
+_ESCAPED_MARKER = re.compile(r"\\\[(\d{1,3})\\\]")
+_UNSAFE_URL_CHARS = re.compile(r"[\s()<>\"'`\\\x00-\x1f]")
+ALLOWED_LINK_HOST = "eur-lex.europa.eu"
+
+
+def escape_markdown(text: str) -> str:
+    """Backslash-escape every markdown control character so text renders literally."""
+    return _MARKDOWN_PUNCTUATION.sub(r"\\\1", text)
+
+
+def safe_answer_markdown(text: str) -> str:
+    """Model output as inert markdown: no images, links, HTML or directives; [n] stays readable."""
+    escaped = escape_markdown(text.replace("\r\n", "\n"))
+    escaped = _ESCAPED_MARKER.sub(r"[\1]", escaped)
+    return escaped.replace("\n", "  \n")
+
+
+def is_safe_eurlex_url(url: str) -> bool:
+    if _UNSAFE_URL_CHARS.search(url):
+        return False
+    try:
+        parsed = urlparse(url)
+    except ValueError:
+        return False
+    return parsed.scheme == "https" and parsed.netloc == ALLOWED_LINK_HOST
+
+
 def _client() -> httpx.Client:
     return httpx.Client(base_url=get_settings().api_url, timeout=TIMEOUT_SECONDS)
 
@@ -51,8 +81,11 @@ def _error_message(response: httpx.Response) -> str:
 def ask(question: str, client: httpx.Client | None = None) -> AskResult:
     """Send the question to POST /ask; never raises, errors come back as a message."""
     try:
-        http = client or _client()
-        response = http.post("/ask", json={"question": question})
+        if client is not None:
+            response = client.post("/ask", json={"question": question})
+        else:
+            with _client() as http:
+                response = http.post("/ask", json={"question": question})
     except httpx.HTTPError:
         return AskResult(error=UNAVAILABLE_MESSAGE)
     if response.status_code != 200:
@@ -66,8 +99,11 @@ def ask(question: str, client: httpx.Client | None = None) -> AskResult:
 def get_text_as_of(client: httpx.Client | None = None) -> str:
     """The consolidation dates of the legal texts, from GET /health, or "unknown"."""
     try:
-        http = client or _client()
-        response = http.get("/health", timeout=5.0)
+        if client is not None:
+            response = client.get("/health", timeout=5.0)
+        else:
+            with _client() as http:
+                response = http.get("/health", timeout=5.0)
         response.raise_for_status()
         return str(response.json()["text_as_of"])
     except (httpx.HTTPError, ValueError, KeyError):
@@ -78,9 +114,13 @@ def citation_links(answer: Answer) -> list[str]:
     """One markdown line per citation: a link to EUR-Lex, then the provision title."""
     lines = []
     for citation in answer.citations:
-        line = f"[{citation.label}]({citation.source_url})"
+        if is_safe_eurlex_url(citation.source_url):
+            line = f"[{citation.label}]({citation.source_url})"
+        else:
+            line = escape_markdown(citation.label)
         if citation.title:
-            line += f" - {citation.title} ({citation.language.upper()})"
+            title = escape_markdown(citation.title)
+            line += f" - {title} ({citation.language.upper()})"
         lines.append(line)
     return lines
 
