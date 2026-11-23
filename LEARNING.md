@@ -37,6 +37,24 @@ An assistant should quote the law as it applies today, so **articles and annexes
 
 ## §3 Embeddings + Chroma
 
+**Notebook:** `notebooks/03_embeddings.ipynb` | **Code:** `src/assistant/index.py`
+
+**What is an embedding?** An embedding is a list of numbers (here 384 of them) that a model computes from a text. The model is trained so that texts with a similar *meaning* get similar lists, even when they use different words or even different languages. You can think of each text as a point in a 384-dimensional space: close points mean similar meaning. Searching then becomes "embed the question, find the nearest points". We use `multilingual-e5-small`, a small model that runs on a laptop CPU and understands German and English.
+
+**Why the "query:" and "passage:" prefixes?** The e5 models were trained with two labels: stored texts start with `passage: ` and questions start with `query: `. If you leave them out, the search still works but noticeably worse, because the model expects them. Our `E5Embeddings` wrapper adds them automatically (and never adds them twice).
+
+**Normalization and cosine.** We scale every vector to length 1. Then the only thing left that distinguishes two vectors is their direction, and "how similar" is the cosine of the angle between them (1.0 = same direction). Chroma is set to cosine distance, where small means similar (distance = 1 - similarity). A tip from the notebook: e5 gives high scores to everything (even unrelated legal texts score around 0.8), so compare the *gap* between scores, not the absolute number.
+
+**Why long chunks are split.** The model reads at most 512 tokens (about 1500-2000 characters); the rest would be silently ignored. Some chunks (for example AI Act Article 5(1)) are over 6000 characters, so any chunk over 1200 characters is cut into parts of up to 1200 characters with 150 characters of overlap. **Every part repeats the heading line** ("Artikel 5 - Verbotene Praktiken ..."), so a part still says which article it belongs to. The metadata is the same for all parts, plus a `part` number, so a citation never changes. Result: 3044 chunks became 3638 documents (594 extra parts).
+
+**What Chroma stores.** For each document: its id (like `GDPR-en-article-6-1`, or `...#p1` for a split part), the text, the embedding vector, and the metadata (regulation, language, article number, paragraph, link ...). Chroma cannot store "empty" values, so a missing paragraph or title is saved as an empty string `""`. The index lives in the folder `data/chroma/` (not in git; rebuild it any time with `uv run python -m assistant.index`). Rebuilding deletes the old collection first, so you never get duplicates.
+
+**Cost of building it (MacBook Air M1, CPU).** About 131 seconds for 3638 documents, peak memory about 1.6 GB. Fine for 8 GB RAM.
+
+**What you will see in the notebook:** German and English versions of GDPR Art. 6(1) have similarity 0.87; an unrelated article scores 0.81 / 0.77. A German question returns only German chunks at first; filtering to English still finds related English chunks, but looser ones. That is why stage 4 adds keyword search and de-duplication.
+
+**Check yourself:** (1) What would go wrong if we stored chunks without `passage: ` but queried with `query: `? (2) Why does each split part repeat the heading? (3) Why compare score gaps instead of absolute scores?
+
 ## §4 Hybrid retrieval
 
 ## §5 RAG chain
