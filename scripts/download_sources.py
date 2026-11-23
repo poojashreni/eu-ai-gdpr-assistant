@@ -15,6 +15,7 @@ import json
 import re
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -24,15 +25,15 @@ UA = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 )
-BASE = "https://eur-lex.europa.eu/legal-content"
 DELAY_S = 2.0
 
-# regulation -> (base CELEX, consolidated CELEX prefix, last article, title marker per language)
+# Per regulation: CELEX ids, last article / recital number, file prefix, OJ publication date.
 REGULATIONS = {
     "AI_ACT": {
         "base": "32024R1689",
         "cons": "02024R1689",
         "last": 113,
+        "last_recital": 180,
         "file": "ai_act",
         "oj_date": "2024-07-12",
     },
@@ -40,6 +41,7 @@ REGULATIONS = {
         "base": "32016R0679",
         "cons": "02016R0679",
         "last": 99,
+        "last_recital": 173,
         "file": "gdpr",
         "oj_date": "2016-05-04",
     },
@@ -90,42 +92,60 @@ def latest_consolidated(reg: dict) -> str | None:
     return max(dates) if dates else None
 
 
+def _entry(name, reg, lang, celex, kind, version, fname, role):
+    cellar_url = f"{CELLAR}/{celex}"
+    return cellar_url, {
+        "regulation": name,
+        "language": lang,
+        "celex": celex,
+        "version_date": version,
+        "url": f"https://eur-lex.europa.eu/legal-content/{lang.upper()}/TXT/?uri=CELEX:{celex}",
+        "file": fname,
+        "kind": kind,
+        "role": role,
+        "fetched_from": cellar_url,
+    }
+
+
 def download() -> None:
     RAW.mkdir(parents=True, exist_ok=True)
     sources, failed = [], []
-    for name, reg in REGULATIONS.items():
-        date = latest_consolidated(reg)
-        if date:
-            celex, kind = f"{reg['cons']}-{date}", "consolidated"
-            version = f"{date[:4]}-{date[4:6]}-{date[6:]}"
-        else:
-            celex, kind, version = reg["base"], "original", reg["oj_date"]
+    try:
+        jobs = []
+        for name, reg in REGULATIONS.items():
+            date = latest_consolidated(reg)
+            if date:
+                celex, kind = f"{reg['cons']}-{date}", "consolidated"
+                version = f"{date[:4]}-{date[4:6]}-{date[6:]}"
+                jobs.append((name, reg, celex, kind, version, "", "articles"))
+            # Consolidated texts carry no recitals: always add the original OJ text.
+            jobs.append(
+                (name, reg, reg["base"], "original", reg["oj_date"], "_original", "recitals")
+            )
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        print(f"Download failed: SPARQL lookup: {exc}", file=sys.stderr)
+        sys.exit(1)
+    for name, reg, celex, kind, version, suffix, role in jobs:
         for lang in LANGS:
-            cellar_url = f"{CELLAR}/{celex}"
-            fname = f"{reg['file']}_{lang}.html"
+            fname = f"{reg['file']}_{lang}{suffix}.html"
+            cellar_url, entry = _entry(name, reg, lang, celex, kind, version, fname, role)
             try:
                 (RAW / fname).write_text(fetch(cellar_url, lang), encoding="utf-8")
-            except Blocked as exc:
-                failed.append(str(exc))
+            except (Blocked, urllib.error.URLError, TimeoutError, OSError) as exc:
+                failed.append(f"{cellar_url} ({lang}): {exc}")
             else:
-                sources.append(
-                    {
-                        "regulation": name,
-                        "language": lang,
-                        "celex": celex,
-                        "version_date": version,
-                        "url": f"https://eur-lex.europa.eu/legal-content/{lang.upper()}/TXT/?uri=CELEX:{celex}",
-                        "file": fname,
-                        "kind": kind,
-                        "fetched_from": cellar_url,
-                    }
-                )
+                sources.append(entry)
             time.sleep(DELAY_S)
     if failed:
         print("Download failed for:", *failed, sep="\n  ", file=sys.stderr)
         sys.exit(1)
     (RAW / "sources.json").write_text(json.dumps(sources, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(sources)} files to {RAW}")
+
+
+def _normalized(path: Path) -> str:
+    raw = path.read_text(encoding="utf-8", errors="replace").replace("&nbsp;", " ")
+    return re.sub(r"[\s\u00a0]+", " ", raw)
 
 
 def check() -> int:
@@ -135,21 +155,31 @@ def check() -> int:
             path = RAW / f"{reg['file']}_{lang}.html"
             if not path.exists():
                 problems.append(f"missing: {path.name}")
+            else:
+                text = _normalized(path)
+                word = ARTICLE[lang]
+                for n in (1, reg["last"]):
+                    if not re.search(rf"{word} {n}\b", text):
+                        problems.append(f"{path.name}: no '{word} {n}'")
+                print(f"ok  {path.name}  {len(text):>9} chars")
+            orig = RAW / f"{reg['file']}_{lang}_original.html"
+            if not orig.exists():
+                problems.append(f"missing: {orig.name}")
                 continue
-            raw = path.read_text(encoding="utf-8", errors="replace").replace("&nbsp;", " ")
-            text = re.sub(r"[\s\u00a0]+", " ", raw)
-            word = ARTICLE[lang]
-            for n in (1, reg["last"]):
-                if not re.search(rf"{word} {n}\b", text):
-                    problems.append(f"{path.name}: no '{word} {n}'")
-            print(f"ok  {path.name}  {len(text):>9} chars")
+            text = _normalized(orig)
+            for n in (1, reg["last_recital"]):
+                if not re.search(rf"\({n}\)", text):
+                    problems.append(f"{orig.name}: no recital ({n})")
+            print(f"ok  {orig.name}  {len(text):>9} chars")
     sources = RAW / "sources.json"
     if not sources.exists():
         problems.append("missing: sources.json")
     else:
         entries = json.loads(sources.read_text(encoding="utf-8"))
-        if len(entries) != 4 or any(not e.get("version_date") for e in entries):
-            problems.append("sources.json: need 4 entries with version_date")
+        if len(entries) != 8 or any(
+            not e.get("version_date") or not e.get("role") for e in entries
+        ):
+            problems.append("sources.json: need 8 entries with version_date and role")
     for p in problems:
         print("FAIL", p, file=sys.stderr)
     print("CHECK PASSED" if not problems else f"CHECK FAILED ({len(problems)} problems)")

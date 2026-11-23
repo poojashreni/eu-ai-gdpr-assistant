@@ -7,6 +7,7 @@
     "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:02024R1689-20260727",
     "file": "ai_act_de.html",
     "kind": "consolidated",
+    "role": "articles",
     "fetched_from": "https://publications.europa.eu/resource/celex/02024R1689-20260727"
   },
   {
@@ -17,7 +18,30 @@
     "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727",
     "file": "ai_act_en.html",
     "kind": "consolidated",
+    "role": "articles",
     "fetched_from": "https://publications.europa.eu/resource/celex/02024R1689-20260727"
+  },
+  {
+    "regulation": "AI_ACT",
+    "language": "de",
+    "celex": "32024R1689",
+    "version_date": "2024-07-12",
+    "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R1689",
+    "file": "ai_act_de_original.html",
+    "kind": "original",
+    "role": "recitals",
+    "fetched_from": "https://publications.europa.eu/resource/celex/32024R1689"
+  },
+  {
+    "regulation": "AI_ACT",
+    "language": "en",
+    "celex": "32024R1689",
+    "version_date": "2024-07-12",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+    "file": "ai_act_en_original.html",
+    "kind": "original",
+    "role": "recitals",
+    "fetched_from": "https://publications.europa.eu/resource/celex/32024R1689"
   },
   {
     "regulation": "GDPR",
@@ -27,6 +51,7 @@
     "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:02016R0679-20160504",
     "file": "gdpr_de.html",
     "kind": "consolidated",
+    "role": "articles",
     "fetched_from": "https://publications.europa.eu/resource/celex/02016R0679-20160504"
   },
   {
@@ -37,6 +62,29 @@
     "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02016R0679-20160504",
     "file": "gdpr_en.html",
     "kind": "consolidated",
+    "role": "articles",
     "fetched_from": "https://publications.europa.eu/resource/celex/02016R0679-20160504"
+  },
+  {
+    "regulation": "GDPR",
+    "language": "de",
+    "celex": "32016R0679",
+    "version_date": "2016-05-04",
+    "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32016R0679",
+    "file": "gdpr_de_original.html",
+    "kind": "original",
+    "role": "recitals",
+    "fetched_from": "https://publications.europa.eu/resource/celex/32016R0679"
+  },
+  {
+    "regulation": "GDPR",
+    "language": "en",
+    "celex": "32016R0679",
+    "version_date": "2016-05-04",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679",
+    "file": "gdpr_en_original.html",
+    "kind": "original",
+    "role": "recitals",
+    "fetched_from": "https://publications.europa.eu/resource/celex/32016R0679"
   }
 ]
