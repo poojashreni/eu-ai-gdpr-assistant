@@ -1,0 +1,42 @@
+[
+  {
+    "regulation": "AI_ACT",
+    "language": "de",
+    "celex": "02024R1689-20260727",
+    "version_date": "2026-07-27",
+    "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:02024R1689-20260727",
+    "file": "ai_act_de.html",
+    "kind": "consolidated",
+    "fetched_from": "https://publications.europa.eu/resource/celex/02024R1689-20260727"
+  },
+  {
+    "regulation": "AI_ACT",
+    "language": "en",
+    "celex": "02024R1689-20260727",
+    "version_date": "2026-07-27",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727",
+    "file": "ai_act_en.html",
+    "kind": "consolidated",
+    "fetched_from": "https://publications.europa.eu/resource/celex/02024R1689-20260727"
+  },
+  {
+    "regulation": "GDPR",
+    "language": "de",
+    "celex": "02016R0679-20160504",
+    "version_date": "2016-05-04",
+    "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:02016R0679-20160504",
+    "file": "gdpr_de.html",
+    "kind": "consolidated",
+    "fetched_from": "https://publications.europa.eu/resource/celex/02016R0679-20160504"
+  },
+  {
+    "regulation": "GDPR",
+    "language": "en",
+    "celex": "02016R0679-20160504",
+    "version_date": "2016-05-04",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02016R0679-20160504",
+    "file": "gdpr_en.html",
+    "kind": "consolidated",
+    "fetched_from": "https://publications.europa.eu/resource/celex/02016R0679-20160504"
+  }
+]
