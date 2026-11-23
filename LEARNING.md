@@ -57,6 +57,18 @@ An assistant should quote the law as it applies today, so **articles and annexes
 
 ## §4 Hybrid retrieval
 
+**Two kinds of search.** *Keyword search* (we use BM25) scores a passage by how many of the question's words it contains, giving more weight to rare words. *Meaning search* uses the embeddings from stage 3: it finds passages whose meaning is close to the question, even with different words. Each has a blind spot. Keywords cannot see that "anonym" and "nicht mehr identifiziert werden kann" mean the same thing. Embeddings are fuzzy about exact tokens such as "Artikel 5" or "Annex III".
+
+**Why law needs both.** People ask in two ways: by reference ("Was regelt Artikel 5?") and by idea ("When is data anonymous?"). A legal assistant must handle both, so we run both searches and merge them. The BM25 side uses a simple tokenizer: lowercase, split on anything that is not a letter or digit, keep umlauts. No stemming yet.
+
+**How the merge works.** LangChain's `EnsembleRetriever` uses *Reciprocal Rank Fusion*. It ignores the raw scores (BM25 and cosine scores are on different scales) and only looks at positions. A passage at rank r in a list earns `weight / (r + 60)` points; points from both lists are added. A passage that appears high in both lists wins; one that only one list found can still make it, but with fewer points. Our weights are 0.4 for BM25 and 0.6 for vectors, and each side fetches 12 candidates so the merge has material to work with.
+
+**Why we de-duplicate.** The index holds every provision in German *and* English, and long provisions are split into parts. Without cleanup the top 6 could be three copies of Art. 5. So results that share the same identity (regulation, type, number, paragraph) collapse into one. Which copy survives? The one in the question's language, so a German question gets German text to quote.
+
+**What the notebook showed (5 questions).** Hybrid found the expected provision every time, but it was not magic. BM25 alone missed Recital 26 for the German anonymisation question; vector alone found it. For the "Artikel 5" question BM25 only reached rank 6 and the hybrid put Art. 5 at rank 4, behind the vector-only rank 3, because common words like "KI" and "Verordnung" make the number a weak signal. Hybrid helped most when both lists agreed (lawfulness of processing: rank 3 vs 5 and 6). Honest takeaway: hybrid is a safety net that is rarely much worse than the better single method. Five questions are only a feeling; stage 6 measures it properly.
+
+**Check yourself:** (1) Why does RRF use ranks instead of scores? (2) What would happen to a German question if we skipped de-duplication? (3) Which question type would you expect BM25 to beat embeddings on, and why did the Art. 5 example not show that clearly?
+
 ## §5 RAG chain
 
 ## §6 Evaluation
