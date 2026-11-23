@@ -17,7 +17,6 @@ import argparse
 import csv
 import io
 import json
-import re
 import sys
 import time
 from collections.abc import Callable
@@ -28,6 +27,7 @@ if __package__ in (None, ""):  # run as a script: make `eval` and `assistant` im
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from langchain_core.documents import Document  # noqa: E402
+from pydantic import ValidationError  # noqa: E402
 
 from assistant.chain import detect_language  # noqa: E402
 from assistant.models import Answer, Chunk  # noqa: E402
@@ -160,8 +160,6 @@ Rate the answer on two 1-5 scales:
 Reply with JSON only, no other text:
 {{"faithfulness": <1-5>, "relevance": <1-5>, "reason": "<one short sentence>"}}"""
 
-_JSON_OBJECT = re.compile(r"\{.*\}", re.DOTALL)
-
 
 def _score(value) -> int | None:
     try:
@@ -178,11 +176,14 @@ def parse_judge_output(text: str) -> dict | None:
 
     Tolerates code fences and chatter around the JSON; rejects scores outside 1-5.
     """
-    match = _JSON_OBJECT.search(text or "")
-    if not match:
+    text = text or ""
+    start = text.find("{")
+    if start < 0:
         return None
     try:
-        data = json.loads(match.group(0))
+        # raw_decode reads exactly one JSON value and ignores what follows it, so trailing
+        # chatter (even with braces in it) does not break parsing.
+        data, _ = json.JSONDecoder().raw_decode(text, start)
     except json.JSONDecodeError:
         return None
     if not isinstance(data, dict):
@@ -195,6 +196,38 @@ def parse_judge_output(text: str) -> dict | None:
         "relevance": relevance,
         "reason": str(data.get("reason", "")),
     }
+
+
+class EmptyModelOutput(Exception):
+    """The model returned no text (for example a blocked or empty Gemini response)."""
+
+
+def make_answer_fn(retrieve: Retrieve, llm) -> AnswerFn:
+    """`answer_question` with a check on the raw model output.
+
+    `answer_question` turns an empty reply into a refusal, which would be cached as if the
+    model had refused. Here an empty reply raises `EmptyModelOutput` instead, so it is retried.
+    """
+    from langchain_core.runnables import RunnableLambda
+
+    from assistant.chain import _message_text, answer_question
+
+    raw: list[str] = []
+
+    def capture(message):
+        raw.append(_message_text(message))
+        return message
+
+    recording_llm = llm | RunnableLambda(capture)
+
+    def answer(question: str) -> Answer:
+        raw.clear()
+        result = answer_question(question, retrieve, recording_llm)
+        if not "".join(raw).strip():
+            raise EmptyModelOutput("the model returned no text")
+        return result
+
+    return answer
 
 
 def make_judge(llm) -> JudgeFn:
@@ -257,14 +290,41 @@ def _retrieval_record(item: dict, retrieve: Retrieve, detect, coverage) -> tuple
     return record, docs
 
 
-def _read_cache(path: Path, question: str) -> dict | None:
+def _valid_verdict(verdict) -> bool:
+    return isinstance(verdict, dict) and parse_judge_output(json.dumps(verdict)) is not None
+
+
+def _read_cache(
+    path: Path, question: str, fingerprint: dict, judge_fingerprint: dict
+) -> dict | None:
+    """Return the cache entry, or None if it is missing, unreadable, or stale.
+
+    Stale means: the question was edited, the answer settings (`fingerprint`: retrieval
+    settings, models, chunking, index size) changed, or the cached answer does not fit the
+    current `Answer` schema. A verdict from another judge model or with a broken shape is
+    dropped on its own, so the answer is kept and only the judge is asked again.
+    """
     if not path.exists():
         return None
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
+    except (json.JSONDecodeError, UnicodeDecodeError):
         return None
-    return data if data.get("question") == question else None  # edited question -> stale
+    if not isinstance(data, dict) or data.get("question") != question:
+        return None
+    if data.get("fingerprint", {}) != fingerprint:
+        return None
+    if "answer" in data:
+        try:
+            Answer(**data["answer"])
+        except (TypeError, ValidationError):
+            return None
+    if "judge" in data and (
+        data.get("judge_fingerprint", {}) != judge_fingerprint or not _valid_verdict(data["judge"])
+    ):
+        data.pop("judge")
+        data.pop("judge_fingerprint", None)
+    return data
 
 
 def _write_cache(path: Path, data: dict) -> None:
@@ -286,13 +346,22 @@ def run(
     throttle: Throttle | None = None,
     coverage: dict[str, list[tuple]] | None = None,
     detect=detect_language,
+    fingerprint: dict | None = None,
+    judge_fingerprint: dict | None = None,
 ) -> list[dict]:
     """Evaluate every item; returns one JSON-serialisable record per item.
+
+    `fingerprint` describes everything an answer depends on (top_k, weights, models, chunking,
+    index size) and `judge_fingerprint` the judge model; cached entries made with different
+    values are treated as stale and asked again. An `EmptyModelOutput` from `answer_fn` is not
+    cached (it is retried next run) and does not stop the run.
 
     After a provider error (quota, network) no further LLM calls are made in this run;
     retrieval continues for all items, and a rerun resumes the answers from the cache.
     """
     throttle = throttle or Throttle()
+    fingerprint = fingerprint or {}
+    judge_fingerprint = judge_fingerprint or {}
     llm_error: str | None = None
     records = []
     for item in items:
@@ -302,9 +371,10 @@ def run(
         if retrieval_only or answer_fn is None:
             continue
         path = cache_dir / f"{item['id']}.json"
-        cached = _read_cache(path, item["question"]) or {
+        cached = _read_cache(path, item["question"], fingerprint, judge_fingerprint) or {
             "id": item["id"],
             "question": item["question"],
+            "fingerprint": fingerprint,
         }
         if "answer" not in cached:
             if llm_error:
@@ -313,6 +383,9 @@ def run(
             try:
                 throttle.wait()
                 cached["answer"] = answer_fn(item["question"]).model_dump()
+            except EmptyModelOutput as exc:
+                record["llm_error"] = f"empty model output, not cached, will retry: {exc}"
+                continue
             except Exception as exc:  # noqa: BLE001 - any provider failure ends the LLM phase
                 llm_error = f"{type(exc).__name__}: {str(exc)[:200]}"
                 record["llm_error"] = llm_error
@@ -339,6 +412,7 @@ def run(
             record["judge_error"] = "judge output was not valid JSON with 1-5 scores"
             continue  # not cached: the next run asks again
         cached["judge"] = verdict
+        cached["judge_fingerprint"] = judge_fingerprint
         record["judge"] = verdict
         _write_cache(path, cached)
     return records
@@ -594,7 +668,7 @@ def main(argv: list[str] | None = None) -> None:
 
     answer_fn = judge_fn = None
     if not args.retrieval_only:
-        from assistant.chain import answer_question, make_llm
+        from assistant.chain import make_llm
 
         try:
             llm = make_llm(settings)
@@ -604,8 +678,23 @@ def main(argv: list[str] | None = None) -> None:
     retrieve = build_retriever(store, indexed, settings)
     retrieve("warm-up query", "en")  # load the model before latencies are measured
     if not args.retrieval_only:
-        answer_fn = lambda q: answer_question(q, retrieve, llm)  # noqa: E731
+        answer_fn = make_answer_fn(retrieve, llm)
         judge_fn = None if args.skip_judge else make_judge(llm)
+    llm_name = "none"
+    if not args.retrieval_only:
+        model = (
+            settings.gemini_model if settings.llm_provider == "gemini" else settings.openai_model
+        )
+        llm_name = f"{settings.llm_provider}/{model}"
+    fingerprint = {
+        "top_k": settings.top_k,
+        "bm25_weight": settings.bm25_weight,
+        "vector_weight": settings.vector_weight,
+        "embed_model": settings.embed_model,
+        "llm": llm_name,
+        "chunking": args.chunking,
+        "indexed_documents": store._collection.count(),
+    }
 
     records = run(
         items,
@@ -617,6 +706,8 @@ def main(argv: list[str] | None = None) -> None:
         skip_judge=args.skip_judge,
         throttle=Throttle(args.throttle),
         coverage=coverage,
+        fingerprint=fingerprint,
+        judge_fingerprint={"judge": llm_name},  # the judge uses the same model as the answers
     )
     meta = {
         "date": date.today().isoformat(),
@@ -628,12 +719,8 @@ def main(argv: list[str] | None = None) -> None:
         "bm25_weight": settings.bm25_weight,
         "vector_weight": settings.vector_weight,
         "embed_model": settings.embed_model,
-        "llm": "none"
-        if args.retrieval_only
-        else (
-            settings.gemini_model if settings.llm_provider == "gemini" else settings.openai_model
-        ),
-        "indexed_documents": store._collection.count(),
+        "llm": llm_name,
+        "indexed_documents": fingerprint["indexed_documents"],
         "chunks": len(indexed),
     }
     _save_and_render(args.chunking, records, meta, gold)

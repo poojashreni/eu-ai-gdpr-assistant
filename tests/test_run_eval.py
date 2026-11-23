@@ -6,7 +6,9 @@ from langchain_core.documents import Document
 from assistant.models import Answer, Chunk, Citation
 from eval.run_eval import (
     PENDING,
+    EmptyModelOutput,
     Throttle,
+    make_answer_fn,
     missing_expectations,
     parse_judge_output,
     render_appendix,
@@ -320,6 +322,7 @@ def test_naive_coverage_counts_text_that_was_retrieved_under_another_label(tmp_p
         '{"faithfulness": 4, "relevance": 5, "reason": "fine"}',
         '```json\n{"faithfulness": 4, "relevance": 5, "reason": "fine"}\n```',
         'Here is my verdict: {"faithfulness": "4", "relevance": 5.0, "reason": "fine"} Thanks.',
+        '{"faithfulness": 4, "relevance": 5, "reason": "fine"} (scale used: {1..5})',
     ],
 )
 def test_parse_judge_output_accepts_common_shapes(raw):
@@ -364,3 +367,164 @@ def test_missing_expectations_finds_provisions_not_in_the_corpus():
     article_level = dict(GOLD[0], id="q04", expected=[dict(GOLD[0]["expected"][0], paragraph=None)])
     missing = missing_expectations(GOLD + [article_level], chunks)
     assert missing == [("q02", "GDPR recital 26")]  # Art. 6 without paragraph matches Art. 6(1)
+
+
+FP = {
+    "top_k": 6,
+    "bm25_weight": 0.4,
+    "vector_weight": 0.6,
+    "embed_model": "e5",
+    "llm": "gemini/gemini-2.5-flash",
+    "chunking": "structured",
+    "indexed_documents": 3638,
+}
+JUDGE_FP = {"judge": "gemini/gemini-2.5-flash"}
+
+
+def test_cache_stale_when_settings_change(tmp_path):
+    run(
+        GOLD,
+        fake_retrieve,
+        tmp_path,
+        answer_fn=Recorder().answer,
+        judge_fn=Recorder().judge,
+        throttle=NoSleep(),
+        fingerprint=FP,
+        judge_fingerprint=JUDGE_FP,
+    )
+    same = Recorder()
+    run(
+        GOLD,
+        fake_retrieve,
+        tmp_path,
+        answer_fn=same.answer,
+        judge_fn=same.judge,
+        throttle=NoSleep(),
+        fingerprint=dict(FP),
+        judge_fingerprint=dict(JUDGE_FP),
+    )
+    assert same.answers == 0 and same.judges == 0
+
+    for change in (
+        {"top_k": 8},
+        {"bm25_weight": 0.5},
+        {"embed_model": "other"},
+        {"llm": "openai/gpt-4o-mini"},
+        {"chunking": "naive"},
+        {"indexed_documents": 3700},
+    ):
+        rec = Recorder()
+        run(
+            GOLD,
+            fake_retrieve,
+            tmp_path,
+            answer_fn=rec.answer,
+            judge_fn=rec.judge,
+            throttle=NoSleep(),
+            fingerprint=FP | change,
+            judge_fingerprint=JUDGE_FP,
+        )
+        assert rec.answers == 3 and rec.judges == 2, change
+        # Put the original settings back for the next change.
+        run(
+            GOLD,
+            fake_retrieve,
+            tmp_path,
+            answer_fn=Recorder().answer,
+            judge_fn=Recorder().judge,
+            throttle=NoSleep(),
+            fingerprint=FP,
+            judge_fingerprint=JUDGE_FP,
+        )
+
+    # A different judge model re-judges but keeps the answers.
+    rec = Recorder()
+    run(
+        GOLD,
+        fake_retrieve,
+        tmp_path,
+        answer_fn=rec.answer,
+        judge_fn=rec.judge,
+        throttle=NoSleep(),
+        fingerprint=FP,
+        judge_fingerprint={"judge": "other"},
+    )
+    assert rec.answers == 0 and rec.judges == 2
+
+
+def test_cache_stale_on_bad_schema(tmp_path):
+    bad = {
+        "q01": "not json at all {",
+        "q02": json.dumps(
+            {
+                "id": "q02",
+                "question": GOLD[1]["question"],
+                "fingerprint": {},
+                "answer": {"text": "old schema"},
+            }
+        ),
+        "q03": json.dumps(["a", "list"]),
+    }
+    for qid, content in bad.items():
+        (tmp_path / f"{qid}.json").write_text(content)
+    rec = Recorder()
+    records = run(
+        GOLD, fake_retrieve, tmp_path, answer_fn=rec.answer, judge_fn=rec.judge, throttle=NoSleep()
+    )
+    assert rec.answers == 3  # every broken entry was asked again, nothing crashed
+    assert all(r["answer"] for r in records)
+
+
+def test_cache_drops_verdict_with_bad_schema_but_keeps_answer(tmp_path):
+    run(
+        GOLD[:1],
+        fake_retrieve,
+        tmp_path,
+        answer_fn=Recorder().answer,
+        judge_fn=Recorder().judge,
+        throttle=NoSleep(),
+    )
+    path = tmp_path / "q01.json"
+    data = json.loads(path.read_text())
+    data["judge"] = {"faithfulness": "high"}
+    path.write_text(json.dumps(data))
+    rec = Recorder()
+    run(
+        GOLD[:1],
+        fake_retrieve,
+        tmp_path,
+        answer_fn=rec.answer,
+        judge_fn=rec.judge,
+        throttle=NoSleep(),
+    )
+    assert rec.answers == 0 and rec.judges == 1
+
+
+def test_empty_model_output_is_not_cached_and_retried(tmp_path):
+    calls = []
+
+    def empty_then_ok(question):
+        calls.append(question)
+        if len(calls) == 1:
+            raise EmptyModelOutput("empty response")
+        return make_answer(question)
+
+    records = run(
+        GOLD, fake_retrieve, tmp_path, answer_fn=empty_then_ok, judge_fn=None, throttle=NoSleep()
+    )
+    assert records[0]["answer"] is None and "empty" in records[0]["llm_error"]
+    assert records[1]["answer"] is not None  # an empty response does not stop the run
+    assert not (tmp_path / "q01.json").exists()
+    rec = Recorder()
+    run(GOLD, fake_retrieve, tmp_path, answer_fn=rec.answer, judge_fn=None, throttle=NoSleep())
+    assert rec.answers == 1  # only q01 is asked again
+
+
+def test_make_answer_fn_raises_on_empty_model_output():
+    from langchain_core.language_models.fake_chat_models import FakeListChatModel
+
+    answer = make_answer_fn(fake_retrieve, FakeListChatModel(responses=["", "Lawful [1]."]))
+    with pytest.raises(EmptyModelOutput):
+        answer("When is processing lawful?")
+    result = answer("When is processing lawful?")
+    assert not result.refused and result.citations[0].number == "6"
