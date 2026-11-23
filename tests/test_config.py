@@ -37,6 +37,14 @@ def test_citation_label():
     assert _citation(paragraph="2").label == "AI Act Art. 6(2)"
     assert _citation().label == "AI Act Art. 6"
     assert _citation(regulation="GDPR", type="recital", number="26").label == "GDPR Recital 26"
-    assert (
-        _citation(type="annex", number="III", paragraph="4").label == "AI Act Annex III point 4"
-    )
+    assert _citation(type="annex", number="III", paragraph="4").label == "AI Act Annex III point 4"
+
+
+def test_api_keys_are_secret_and_not_in_repr(monkeypatch):
+    monkeypatch.chdir("/")  # no .env picked up
+    monkeypatch.setenv("GOOGLE_API_KEY", "fake-google-key-123")
+    monkeypatch.setenv("OPENAI_API_KEY", "fake-openai-key-456")
+    settings = Settings()
+    assert "fake-google-key-123" not in repr(settings)
+    assert "fake-openai-key-456" not in str(settings)
+    assert settings.google_api_key.get_secret_value() == "fake-google-key-123"

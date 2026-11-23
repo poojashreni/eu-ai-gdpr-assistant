@@ -2,6 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,8 +11,8 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    google_api_key: str | None = None
-    openai_api_key: str | None = None
+    google_api_key: SecretStr | None = None
+    openai_api_key: SecretStr | None = None
     llm_provider: Literal["gemini", "openai"] = "gemini"
     gemini_model: str = "gemini-2.5-flash"
     openai_model: str = "gpt-4o-mini"

@@ -72,13 +72,19 @@ def make_llm(settings: Settings) -> BaseChatModel:
         from langchain_google_genai import ChatGoogleGenerativeAI
 
         return ChatGoogleGenerativeAI(
-            model=settings.gemini_model, temperature=0, google_api_key=settings.google_api_key
+            model=settings.gemini_model,
+            temperature=0,
+            google_api_key=settings.google_api_key.get_secret_value(),
         )
     if not settings.openai_api_key:
         raise ValueError("OPENAI_API_KEY is not set. Add it to your .env file.")
     from langchain_openai import ChatOpenAI
 
-    return ChatOpenAI(model=settings.openai_model, temperature=0, api_key=settings.openai_api_key)
+    return ChatOpenAI(
+        model=settings.openai_model,
+        temperature=0,
+        api_key=settings.openai_api_key.get_secret_value(),
+    )
 
 
 def _citation(doc: Document) -> Citation:

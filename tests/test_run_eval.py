@@ -3,14 +3,18 @@ import json
 import pytest
 from langchain_core.documents import Document
 
+from assistant import chain
 from assistant.models import Answer, Chunk, Citation
+from eval import run_eval
 from eval.run_eval import (
     PENDING,
     EmptyModelOutput,
     Throttle,
+    build_fingerprints,
     make_answer_fn,
     missing_expectations,
     parse_judge_output,
+    prompt_version,
     render_appendix,
     render_results,
     run,
@@ -528,3 +532,38 @@ def test_make_answer_fn_raises_on_empty_model_output():
         answer("When is processing lawful?")
     result = answer("When is processing lawful?")
     assert not result.refused and result.citations[0].number == "6"
+
+
+def test_prompt_version_changes_with_text():
+    assert prompt_version("a") == prompt_version("a")
+    assert prompt_version("a") != prompt_version("b")
+    assert len(prompt_version("a")) == 8
+
+
+def test_fingerprints_carry_prompt_versions():
+    from assistant.config import Settings
+
+    fp, judge_fp = build_fingerprints(Settings(), "structured", 10, "gemini/x")
+    assert fp["prompt"] == prompt_version(chain.SYSTEM_PROMPT, chain.HUMAN_PROMPT)
+    assert judge_fp["prompt"] == prompt_version(run_eval.JUDGE_PROMPT)
+
+
+def test_cache_stale_when_prompt_changes(tmp_path):
+    base = FP | {"prompt": "aaaaaaaa"}
+    judge = JUDGE_FP | {"prompt": "jjjjjjjj"}
+    kwargs = dict(throttle=NoSleep())
+    run(GOLD, fake_retrieve, tmp_path, answer_fn=Recorder().answer, judge_fn=Recorder().judge,
+        fingerprint=base, judge_fingerprint=judge, **kwargs)  # fmt: skip
+    rec = Recorder()
+    run(GOLD, fake_retrieve, tmp_path, answer_fn=rec.answer, judge_fn=rec.judge,
+        fingerprint=base, judge_fingerprint=judge, **kwargs)  # fmt: skip
+    assert rec.answers == 0 and rec.judges == 0
+    rec = Recorder()  # answer prompt edited: everything is redone
+    run(GOLD, fake_retrieve, tmp_path, answer_fn=rec.answer, judge_fn=rec.judge,
+        fingerprint=base | {"prompt": "bbbbbbbb"}, judge_fingerprint=judge, **kwargs)  # fmt: skip
+    assert rec.answers == 3 and rec.judges == 2
+    rec = Recorder()  # judge prompt edited: answers kept, verdicts redone
+    run(GOLD, fake_retrieve, tmp_path, answer_fn=rec.answer, judge_fn=rec.judge,
+        fingerprint=base | {"prompt": "bbbbbbbb"},
+        judge_fingerprint=judge | {"prompt": "kkkkkkkk"}, **kwargs)  # fmt: skip
+    assert rec.answers == 0 and rec.judges == 2
