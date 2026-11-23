@@ -1,0 +1,39 @@
+[project]
+name = "assistant"
+version = "0.1.0"
+description = "Bilingual (DE/EN) RAG assistant over the EU AI Act and GDPR with article-level citations"
+readme = "README.md"
+authors = [
+    { name = "Pooja Shreni Addisherla", email = "poojaa0802@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "fastapi>=0.165.0",
+    "langchain>=1.5.2",
+    "langchain-chroma>=1.1.0",
+    "langchain-community>=0.4.2",
+    "langchain-core>=1.8.4",
+    "langchain-google-genai>=4.5.2",
+    "langchain-huggingface>=1.2.3",
+    "langchain-openai>=1.8.5",
+    "langdetect>=1.0.9",
+    "lxml>=6.1.3",
+    "pydantic-settings>=2.16.3",
+    "rank-bm25>=0.2.2",
+    "sentence-transformers>=6.3.0",
+    "streamlit>=1.67.0",
+    "torch>=2.15.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.4.0",
+    "nbconvert>=7.17.2",
+    "pytest>=9.2.0",
+    "ruff>=0.17.6",
+]
