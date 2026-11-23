@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     embed_model: str = "intfloat/multilingual-e5-small"
     chroma_dir: Path = Path("data/chroma")
     chunks_path: Path = Path("data/chunks.jsonl")
+    sources_path: Path = Path("data/raw/sources.json")
     top_k: int = 6
     bm25_weight: float = 0.4
     vector_weight: float = 0.6

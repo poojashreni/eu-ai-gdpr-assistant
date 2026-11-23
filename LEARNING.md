@@ -134,4 +134,23 @@ The last row is generous to naive: it counts a hit if the expected article's tex
 
 ## §7 API + UI
 
+**Code:** `src/assistant/api.py` | **Tests:** `tests/test_api.py`
+
+### API
+
+**What FastAPI does here.** FastAPI turns a Python function into a web endpoint. `POST /ask` takes `{"question": "..."}` and returns the `Answer` (text, citations, `refused`, latency, tokens); `GET /health` says the service is up, how many chunks are indexed and which version of the laws the text is from ("AI Act 2026-07-27; GDPR 2016-05-04"). `create_app()` builds the app; in production it loads the embedding model, index, retriever and LLM once at startup, in tests we hand it a fake `answer_fn` so no model or key is needed. If no API key is set, the app still starts: `/health` works and `/ask` answers 503.
+
+**Why three guards.** A public demo on a free-tier key has a fixed quota, and anyone on the internet can call the endpoint. Without limits one script could use up the day's quota in a minute and the demo would be dead for everyone. So: (1) a *rate limit* of 10 questions per IP per hour, as a sliding window (each request is remembered for 3600 seconds); (2) a *daily cap* of 200 model calls in total, which resets at midnight UTC; (3) an *answer cache* (the last 256 questions, matched ignoring case and surrounding spaces), so the same question never costs a second model call. A cached answer still counts toward the IP limit but not toward the daily cap, because only the model call costs quota. Everything is kept in memory, which is fine for one process and is lost on restart. The IP comes from the first entry of `X-Forwarded-For` (set by the proxy in front of a Space); that header can be faked by a caller who talks to the app directly, which is why the daily cap exists as a second line of defence.
+
+**What the status codes mean.**
+- **422**: the question is empty, only spaces, or longer than 1000 characters. The message says which.
+- **429**: too many questions from your IP ("Too many questions, please try again later.") or the demo's daily cap is reached ("... daily limit, please try again tomorrow.").
+- **503**: the model call failed, usually because the provider quota is used up. The caller sees one friendly message, never a traceback or the key; the log records only the error type. Failed calls are not cached.
+
+**Check yourself:** (1) Why does a cache hit not count toward the daily cap, but still toward the IP limit? (2) What could a caller do to dodge the per-IP limit, and what still protects the quota? (3) Why must the app start without an API key?
+
+### UI
+
+(Added in the next step: the Streamlit UI.)
+
 ## §8 Docker, CI, deployment
