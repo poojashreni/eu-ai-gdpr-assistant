@@ -38,3 +38,10 @@ dev = [
     "pytest>=9.2.0",
     "ruff>=0.17.6",
 ]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    # BM25Retriever only exists in langchain-community (also re-exported by langchain-classic);
+    # there is no non-deprecated import yet. Silence exactly this sunset notice.
+    "ignore:`langchain-community` is being sunset:DeprecationWarning",
+]

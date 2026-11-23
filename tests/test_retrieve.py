@@ -2,9 +2,9 @@ from langchain_core.documents import Document
 from langchain_core.embeddings import DeterministicFakeEmbedding
 
 from assistant.config import Settings
-from assistant.index import build_index
+from assistant.index import build_index, chunk_to_documents
 from assistant.models import Chunk
-from assistant.retrieve import bm25_tokens, build_retriever, dedupe_cross_language
+from assistant.retrieve import bm25_tokens, build_bm25, build_retriever, dedupe_cross_language
 
 
 def doc(reg="AI_ACT", typ="article", number="6", paragraph="2", lang="en", part=0, text="x"):
@@ -85,6 +85,10 @@ def test_article_number_query_hits_bm25(tmp_path):
         chunk("10", "de", "Artikel 10 – Daten\nTrainingsdaten müssen geeignet sein."),
         chunk("4", "de", "Artikel 4 – KI-Kompetenz\nAnbieter fördern Kompetenz."),
     ]
+    # BM25 alone (no embeddings involved) must already return AI Act Art. 5.
+    bm25 = build_bm25([d for c in chunks for d in chunk_to_documents(c)], k=3)
+    bm25_hits = bm25.invoke("Was regelt Artikel 5 der KI-Verordnung?")
+    assert ("AI_ACT", "5") in [(d.metadata["regulation"], d.metadata["number"]) for d in bm25_hits]
     store = build_index(chunks, DeterministicFakeEmbedding(size=16), tmp_path)
     settings = Settings(top_k=3)
     retrieve = build_retriever(store, chunks, settings)

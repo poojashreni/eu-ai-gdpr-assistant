@@ -57,13 +57,18 @@ def dedupe_cross_language(
     return list(slots.values())[:k]
 
 
+def build_bm25(docs: list[Document], k: int) -> BM25Retriever:
+    """Keyword retriever over the same Documents that are stored in Chroma."""
+    return BM25Retriever.from_documents(docs, k=k, preprocess_func=bm25_tokens)
+
+
 def build_retriever(
     vectorstore: Chroma, chunks: list[Chunk], settings: Settings
 ) -> Callable[[str, str | None], list[Document]]:
     """Return `retrieve(question, language)`. BM25 indexes the same Documents as Chroma."""
     fetch = 2 * settings.top_k
     docs = [d for c in chunks for d in chunk_to_documents(c)]
-    bm25 = BM25Retriever.from_documents(docs, k=fetch, preprocess_func=bm25_tokens)
+    bm25 = build_bm25(docs, fetch)
     # The store embeds the query itself (E5Embeddings adds "query: "), so no prefix here.
     vector = vectorstore.as_retriever(search_kwargs={"k": fetch})
     ensemble = EnsembleRetriever(
