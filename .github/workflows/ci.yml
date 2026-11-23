@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run pytest -q
+
+  eval-smoke:
+    # Runs only on main and only when the repository has a GOOGLE_API_KEY secret.
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+    steps:
+      - name: Check for key
+        id: key
+        run: |
+          if [ -n "$GOOGLE_API_KEY" ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "No GOOGLE_API_KEY secret, skipping eval smoke test."; fi
+      - uses: actions/checkout@v4
+        if: steps.key.outputs.present == 'true'
+      - uses: astral-sh/setup-uv@v5
+        if: steps.key.outputs.present == 'true'
+      - name: Cache embedding model and index
+        if: steps.key.outputs.present == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/huggingface
+            data/chroma
+          key: index-${{ hashFiles('uv.lock', 'data/raw/**', 'src/assistant/parse.py', 'src/assistant/index.py') }}
+      - if: steps.key.outputs.present == 'true'
+        run: uv sync --frozen
+      - name: Build chunks and index
+        if: steps.key.outputs.present == 'true'
+        run: |
+          uv run python -m assistant.parse
+          if [ ! -d data/chroma ]; then uv run python -m assistant.index; fi
+      - name: Eval smoke test (5 questions, no judge)
+        if: steps.key.outputs.present == 'true'
+        run: uv run python eval/run_eval.py --limit 5 --skip-judge
+
+  deploy:
+    # Pushes the repo to the Hugging Face Space. Needs the HF_TOKEN secret and the HF_SPACE_ID
+    # repository variable (for example "your-user/eu-ai-gdpr-assistant").
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      HF_SPACE_ID: ${{ vars.HF_SPACE_ID }}
+    steps:
+      - name: Check for token
+        id: hf
+        run: |
+          if [ -n "$HF_TOKEN" ] && [ -n "$HF_SPACE_ID" ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "HF_TOKEN secret or HF_SPACE_ID variable missing, skipping deploy."; fi
+      - uses: actions/checkout@v4
+        if: steps.hf.outputs.present == 'true'
+        with:
+          fetch-depth: 0
+      - name: Push to Hugging Face Space
+        if: steps.hf.outputs.present == 'true'
+        run: git push --force "https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE_ID}" HEAD:main
