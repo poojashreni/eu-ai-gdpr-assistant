@@ -153,6 +153,16 @@ The last row is generous to naive: it counts a hit if the expected article's tex
 
 ### UI
 
-(Added in the next step: the Streamlit UI.)
+**Code:** `app/streamlit_app.py`, `src/assistant/ui.py` | **Tests:** `tests/test_ui.py`
+
+**What Streamlit is.** Streamlit turns a plain Python script into a web page: every `st.something(...)` call draws a widget, and each click re-runs the script from top to bottom. Values that must survive a re-run (the last answer, the text in the box) live in `st.session_state`. That is why the page keeps showing the answer after you scroll or click "Sources".
+
+**Why the UI calls the API instead of the chain.** The page does not load the embedding model, Chroma or the LLM itself. It sends `POST /ask` to the FastAPI service and draws what comes back. This keeps one place (the API) for the rate limit, the daily cap, the cache and the key, so nobody can get around them by using the UI; the UI can run anywhere, even on a different machine; and the page stays small and starts instantly. The cost is one extra HTTP hop, which is negligible next to the model call.
+
+**Thin script, testable logic.** `app/streamlit_app.py` only draws. Everything that can be wrong (calling the API, mapping errors, building the citation links, the footer text) is in `ui.py` and tested with a fake HTTP transport, with no network. One extra test runs the real page with Streamlit's `AppTest` helper and checks the title, the notices and that an example question shows an answer with an EUR-Lex link.
+
+**How errors are shown.** `ui.ask` never raises. The API's 422, 429 and 503 messages are already written for people, so the page shows them in a red box as they are. If the API cannot be reached at all, or answers something unexpected, the user sees a generic friendly message, never a traceback. A refused answer (`refused=True`) is shown as the "not covered" notice without a source list. The footer shows "Text as of: unknown" when `/health` is down.
+
+**Check yourself:** (1) Why would calling the chain directly from Streamlit weaken the rate limit? (2) What happens to the last answer when you click "Ask" again with an empty box? (3) Why is the error text taken from the API's `detail` field instead of written again in the UI?
 
 ## §8 Docker, CI, deployment
