@@ -35,6 +35,28 @@ An assistant should quote the law as it applies today, so **articles and annexes
 
 ## §2 Chunking comparison
 
+**Notebook:** `notebooks/02_chunking.ipynb` | **Code:** `src/assistant/chunking.py`
+
+**The question.** In stage 1 we cut the law along its own structure: one chunk per article paragraph, recital or annex point. Was that worth the effort, or would the simple method most RAG tutorials use, cutting the text every N characters, work just as well? Stage 2 answers this with numbers instead of opinion.
+
+**The naive baseline.** `naive_chunks` glues each regulation (per language) back into one long text, in document order, and cuts it into pieces of 1000 characters, each overlapping the previous one by 150 characters. The overlap is there so a sentence cut at the edge of one piece still appears whole in the next. A piece cannot know which article it belongs to, so it gets the label of the provision in which it *starts*. That gives 2406 naive pieces against 3044 structured chunks.
+
+**What goes wrong with naive pieces.** The notebook shows a real one: it is labelled GDPR Art. 6(4), starts in the middle of a word ("cular whether ..."), and about 60 % of its text is actually Art. 7 (consent), ending mid-sentence at "(3) The d". If the assistant answers a consent question from it, the citation says "Art. 6(4)": wrong, even if the answer is right.
+
+**How we compared.** Same embedding model, same hybrid retrieval, same settings (top_k = 6, BM25 0.4 / vectors 0.6); only the chunks differ. Then we ran the 35 in-scope questions of the gold set (stage 6) and counted how often the expected article was among the 6 results (hit@k).
+
+| | structured | naive |
+|---|---|---|
+| hit@k, article | **82.9%** (29/35) | 54.3% (19/35) |
+| hit@k, paragraph | **64.3%** (18/28) | 32.1% (9/28) |
+| hit@k, article, counting text under a wrong label | n/a | 57.1% (20/35) |
+
+The last row is generous to naive: it counts a hit if the expected article's text is anywhere inside a retrieved piece. Even then naive is far behind, so the gap is not only about labels: pieces that mix articles and start mid-sentence are also harder to *find*. On the 10 questions where the two methods disagreed, structured won all 10.
+
+**What this does and does not prove.** It supports the design decision of stage 1 on our data. It does not prove structured chunking is better in general: 35 questions is small (one question is about 3 points), we wrote the questions ourselves knowing the system (they may be "article-shaped", which suits structured chunks), and we compared against the simplest naive version, not a tuned one (other sizes, cutting at sentence ends). A fair sentence for a CV: "structure-aware chunking reached 83% hit@6 vs 54% for fixed-size chunks on a self-written 35-question set".
+
+**Check yourself:** (1) Why does a naive piece get the label of the provision where it starts, and what can go wrong? (2) Why do we also report the "text under a wrong label" number? (3) Name two reasons the 83% vs 54% might not hold for real users' questions.
+
 ## §3 Embeddings + Chroma
 
 **Notebook:** `notebooks/03_embeddings.ipynb` | **Code:** `src/assistant/index.py`
@@ -88,6 +110,27 @@ An assistant should quote the law as it applies today, so **articles and annexes
 **Check yourself:** (1) Why number the passages instead of asking the model to name the article? (2) What happens to an answer whose only marker is `[9]`? (3) Why is refusing a correct-but-uncited answer acceptable here?
 
 ## §6 Evaluation
+
+**Notebook:** `notebooks/06_evaluation.ipynb` | **Code:** `eval/run_eval.py`, `eval/metrics.py` | **Data:** `eval/gold.jsonl`, results in `eval/results.md`
+
+**Why evaluate.** Trying a few questions by hand gives a feeling. An evaluation asks the same fixed questions every time and turns the results into numbers, so we can compare designs (stage 2) and see when a change makes things worse.
+
+**The gold set.** 40 questions, 20 German and 20 English: 15 AI Act, 15 GDPR, 5 that need both laws, and 5 out of scope (tax, minimum wage, the Digital Markets Act ...) that the assistant must refuse. For each question we wrote down the provision(s) that answer it, plus a `note` saying why, and checked every one against the actual chunk text, not from memory. That mattered: in the consolidated AI Act the bias-detection rule moved from Art. 10(5) to a new Art. 4a. **The gold set is still a draft until you review it**; all numbers are provisional until then.
+
+**The metrics.**
+- *hit@k (article / paragraph):* is an expected provision among the top 6 results? Retrieval is the ceiling: if the right text is not retrieved, the LLM cannot answer from it.
+- *citation correctness:* does the answer cite an expected article?
+- *refusal accuracy:* does it refuse exactly the out-of-scope questions?
+- *faithfulness and relevance (1-5):* a second LLM call, the "judge", grades whether every claim is supported by the passages and whether the question was answered.
+- *p50 / p95 latency:* the time half / 95% of requests stay under. Unlike the average, p95 shows the slow cases.
+
+**Results so far (retrieval only, no LLM).** Structured: hit@k article 82.9% (n = 35), paragraph 64.3% (n = 28), retrieval 26 ms median / 30 ms p95 (after the model is loaded). Answer metrics are pending until there is a `GOOGLE_API_KEY` and the gold set is reviewed. The run is built for the free tier: it waits 6 s between LLM calls, caches every answer and verdict, and resumes after a quota error without asking anything twice.
+
+**What the misses taught us.** In 5 of the 6 misses the top results were *recitals*. Recitals explain the law in plain language that sounds like a question, so they beat the formal article. Sometimes the recital would even give a correct answer (GDPR Recital 51 lists the same sensitive categories as Art. 9(1)), just with a weaker citation. We did not tune anything to fix this: changing settings until the same 35 questions score better would only "overfit the test". Possible next steps, to decide together: a small boost for articles, or accepting a recital where it really answers the question.
+
+**What the numbers do not prove.** 35 questions is small: the 95% confidence interval for 82.9% is roughly 67-92%. We wrote the questions ourselves, so they may be easier than real users' questions. And a retrieval hit is not a good answer; that is what the pending metrics are for.
+
+**Check yourself:** (1) Why is hit@k a ceiling for answer quality? (2) Why do out-of-scope questions not count in hit@k but do count in refusal accuracy? (3) Why is it a bad idea to tune top_k on the gold set and report the tuned score?
 
 ## §7 API + UI
 

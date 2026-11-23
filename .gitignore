@@ -8,5 +8,6 @@ __pycache__/
 .ruff_cache/
 data/chroma/
 data/cache/
+data/chroma_naive/
 data/chunks.jsonl
 dist/

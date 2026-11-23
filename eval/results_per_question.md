@@ -1,0 +1,46 @@
+# Per-question retrieval results
+
+✓ = an expected provision is in the top-k (article level), ✗ = not, — = out of scope. rank = position of the first expected provision. top1 = the provision ranked first.
+
+| id | language | question | expected | hit_structured | rank_structured | top1_structured | hit_naive | rank_naive | hit_text_naive | top1_naive |
+|---|---|---|---|---|---|---|---|---|---|---|
+| q01 | en | Which uses of AI are completely banned in the EU, for example social scoring? | AI Act Art. 5(1) | ✓ | 3 | AI Act Recital 31 | ✓ | 3 | ✓ | AI Act Recital 30 |
+| q02 | de | Darf ein Arbeitgeber KI einsetzen, um die Emotionen seiner Mitarbeitenden zu erkennen? | AI Act Art. 5(1) | ✗ |  | AI Act Recital 44 | ✗ |  | ✗ | AI Act Recital 43 |
+| q03 | en | How do I find out whether my AI system counts as high-risk? | AI Act Art. 6 | ✓ | 4 | AI Act Art. 80(1) | ✗ |  | ✗ | AI Act Recital 72 |
+| q04 | de | Gilt ein KI-System, das Bewerbungen automatisch vorsortiert, als Hochrisiko-System? | AI Act Annex III point 4; AI Act Art. 6(2) | ✓ | 1 | AI Act Art. 6(3) | ✗ |  | ✗ | AI Act Recital 62 |
+| q05 | en | What does the risk management system for a high-risk AI system have to cover? | AI Act Art. 9 | ✓ | 1 | AI Act Art. 9(6) | ✓ | 3 | ✓ | AI Act Recital 72 |
+| q06 | de | Welche Qualitätsanforderungen gelten für die Trainings-, Validierungs- und Testdaten eines Hochrisiko-KI-Systems? | AI Act Art. 10 | ✓ | 1 | AI Act Art. 10(1) | ✓ | 4 | ✓ | AI Act Recital 66 |
+| q07 | en | What should the people overseeing a high-risk AI system be able to do? | AI Act Art. 14(4) | ✓ | 3 | AI Act Recital 72 | ✓ | 1 | ✓ | AI Act Art. 14(3) |
+| q08 | de | Muss ich Nutzern sagen, dass sie mit einem Chatbot und nicht mit einem Menschen sprechen? | AI Act Art. 50(1) | ✓ | 6 | AI Act Recital 132 | ✗ |  | ✗ | GDPR Recital 32 |
+| q09 | en | Do deepfake videos have to be labelled as artificially generated? | AI Act Art. 50(4) | ✓ | 1 | AI Act Art. 50(4) | ✓ | 1 | ✓ | AI Act Art. 50(4) |
+| q10 | de | Muss ich als Arbeitgeber meine Beschäftigten informieren, bevor ich ein Hochrisiko-KI-System am Arbeitsplatz einsetze? | AI Act Art. 26(7) | ✓ | 1 | AI Act Art. 26(7) | ✓ | 1 | ✓ | AI Act Art. 26(6) |
+| q11 | en | How high can the fines be for using a prohibited AI practice? | AI Act Art. 99(3) | ✓ | 1 | AI Act Art. 99(3) | ✗ |  | ✗ | AI Act Recital 59 |
+| q12 | de | Welche Dokumentation müssen Anbieter von KI-Modellen mit allgemeinem Verwendungszweck erstellen? | AI Act Art. 53(1) | ✓ | 2 | AI Act Recital 101 | ✗ |  | ✓ | AI Act Recital 101 |
+| q13 | en | Do companies that use AI have to make sure their staff understand AI? | AI Act Art. 4(1) | ✓ | 1 | AI Act Art. 4(1) | ✗ |  | ✗ | AI Act Recital 72 |
+| q14 | de | Wie definiert die KI-Verordnung den Begriff KI-System? | AI Act Art. 3(1) | ✓ | 2 | AI Act Recital 12 | ✓ | 2 | ✓ | AI Act Recital 11 |
+| q15 | en | How quickly must a provider report a serious incident caused by its high-risk AI system? | AI Act Art. 73(2) | ✓ | 1 | AI Act Art. 73(1) | ✓ | 1 | ✓ | AI Act Art. 73(3) |
+| q16 | de | Auf welcher Rechtsgrundlage darf ein Unternehmen personenbezogene Daten verarbeiten? | GDPR Art. 6(1) | ✗ |  | GDPR Recital 48 | ✗ |  | ✗ | GDPR Recital 54 |
+| q17 | en | Can I make a company delete the personal data it holds about me? | GDPR Art. 17(1) | ✓ | 5 | GDPR Recital 18 | ✗ |  | ✗ | AI Act Art. 59(1) |
+| q18 | de | Wie schnell muss eine Datenpanne der Aufsichtsbehörde gemeldet werden? | GDPR Art. 33(1) | ✓ | 1 | GDPR Art. 33(1) | ✓ | 1 | ✓ | GDPR Art. 33(1) |
+| q19 | en | What makes consent valid, and can it be withdrawn later? | GDPR Art. 7 | ✓ | 1 | GDPR Art. 7(3) | ✓ | 4 | ✓ | GDPR Recital 65 |
+| q20 | de | Wann muss ein Unternehmen einen Datenschutzbeauftragten benennen? | GDPR Art. 37(1) | ✓ | 1 | GDPR Art. 37(4) | ✓ | 1 | ✓ | GDPR Art. 37(2) |
+| q21 | en | Which kinds of personal data count as especially sensitive under the GDPR? | GDPR Art. 9(1) | ✗ |  | GDPR Recital 10 | ✗ |  | ✗ | GDPR Recital 10 |
+| q22 | de | Welche Informationen muss ein Unternehmen mir geben, wenn es Daten direkt bei mir erhebt? | GDPR Art. 13 | ✗ |  | GDPR Recital 48 | ✗ |  | ✗ | GDPR Recital 36 |
+| q23 | en | When do we have to carry out a data protection impact assessment? | GDPR Art. 35 | ✓ | 1 | GDPR Art. 35(11) | ✓ | 1 | ✓ | GDPR Art. 35(1) |
+| q24 | de | Kann ich verlangen, meine Daten in einem maschinenlesbaren Format zu bekommen, um zu einem anderen Anbieter zu wechseln? | GDPR Art. 20(1) | ✓ | 2 | GDPR Recital 68 | ✓ | 2 | ✓ | GDPR Recital 67 |
+| q25 | en | What is the highest fine a company can get for breaking the GDPR? | GDPR Art. 83(5) | ✓ | 2 | AI Act Art. 100(1) | ✓ | 5 | ✓ | AI Act Art. 100(1) |
+| q26 | de | Ab welchem Alter darf ein Kind selbst in die Datenverarbeitung durch eine App einwilligen? | GDPR Art. 8(1) | ✓ | 1 | GDPR Art. 8(1) | ✓ | 1 | ✓ | GDPR Art. 8(1) |
+| q27 | en | Does the GDPR still apply once data has been anonymised? | GDPR Recital 26 | ✓ | 1 | GDPR Recital 26 | ✓ | 1 | ✓ | GDPR Recital 26 |
+| q28 | de | Dürfen personenbezogene Daten in ein Land außerhalb der EU übermittelt werden, für das die Kommission einen Angemessenheitsbeschluss erlassen hat? | GDPR Art. 45(1) | ✓ | 2 | GDPR Recital 116 | ✗ |  | ✗ | GDPR Recital 115 |
+| q29 | en | What has to be written into a contract between a controller and a processor? | GDPR Art. 28(3) | ✓ | 1 | GDPR Art. 28(6) | ✓ | 1 | ✓ | GDPR Art. 28(1) |
+| q30 | en | As a developer, do I have to build privacy protections into my app from the start? | GDPR Art. 25(1) | ✗ |  | GDPR Recital 14 | ✗ |  | ✗ | GDPR Recital 63 |
+| q31 | en | A bank's AI system rejected my loan application automatically. What rights do I have? | GDPR Art. 22; AI Act Art. 86(1) | ✓ | 6 | AI Act Recital 170 | ✗ |  | ✗ | AI Act Recital 58 |
+| q32 | de | Darf ein Anbieter von Hochrisiko-KI sensible Daten wie die ethnische Herkunft verarbeiten, um Verzerrungen zu erkennen? | AI Act Art. 4a(1) | ✓ | 1 | AI Act Art. 4a(2) | ✓ | 1 | ✓ | AI Act Art. 4a(1) |
+| q33 | en | Does the AI Act replace the GDPR when an AI system processes personal data? | AI Act Art. 2(7) | ✗ |  | AI Act Art. 59(1) | ✗ |  | ✗ | AI Act Art. 26(10) |
+| q34 | de | Muss der Betreiber eines Hochrisiko-KI-Systems eine Datenschutz-Folgenabschätzung durchführen, und welche Informationen kann er dafür nutzen? | AI Act Art. 26(9); GDPR Art. 35 | ✓ | 1 | AI Act Art. 26(9) | ✗ |  | ✗ | AI Act Annex VIII point C.1 |
+| q35 | de | Kann ich für die Grundrechte-Folgenabschätzung Teile einer bestehenden Datenschutz-Folgenabschätzung wiederverwenden? | AI Act Art. 27(4) | ✓ | 1 | AI Act Art. 27(4) | ✓ | 1 | ✓ | AI Act Art. 27(4) |
+| q36 | en | What is the corporate income tax rate in Germany? | (out of scope) | — |  | GDPR Art. 47(2) | — |  | — | GDPR Art. 47(2) |
+| q37 | en | Which obligations does the Digital Markets Act impose on gatekeepers? | (out of scope) | — |  | GDPR Recital 7 | — |  | — | GDPR Recital 31 |
+| q38 | de | Wie hoch ist der gesetzliche Mindestlohn in Deutschland? | (out of scope) | — |  | AI Act Art. 99(3) | — |  | — | AI Act Art. 99(5) |
+| q39 | de | Wie lange ist die Kündigungsfrist für einen Mietvertrag? | (out of scope) | — |  | AI Act Art. 75c(8) | — |  | — | GDPR Art. 36(2) |
+| q40 | de | Welche Python-Bibliothek eignet sich am besten zum Trainieren neuronaler Netze? | (out of scope) | — |  | AI Act Annex XI point 1.2 | — |  | — | AI Act Annex XI point 1.2 |

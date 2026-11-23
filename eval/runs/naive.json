@@ -1,0 +1,1302 @@
+{
+ "meta": {
+  "date": "2026-11-23",
+  "items": 40,
+  "mode": "retrieval-only",
+  "top_k": 6,
+  "bm25_weight": 0.4,
+  "vector_weight": 0.6,
+  "embed_model": "intfloat/multilingual-e5-small",
+  "llm": "none",
+  "indexed_documents": 2406,
+  "chunks": 2406
+ },
+ "summary": {
+  "n_items": 40,
+  "n_in_scope": 35,
+  "n_out_of_scope": 5,
+  "hit_article": {
+   "value": 0.5428571428571428,
+   "n": 35
+  },
+  "hit_paragraph": {
+   "value": 0.32142857142857145,
+   "n": 28
+  },
+  "hit_article_text": {
+   "value": 0.5714285714285714,
+   "n": 35
+  },
+  "retrieval_ms": {
+   "p50": 22.8,
+   "p95": 25.63,
+   "n": 40
+  },
+  "citation_correct": null,
+  "refusal_accuracy": null,
+  "faithfulness": null,
+  "relevance": null,
+  "answer_ms": null,
+  "avg_tokens": null
+ },
+ "records": [
+  {
+   "id": "q01",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "5",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 30",
+    "AI Act Recital 29",
+    "AI Act Art. 5(1)",
+    "AI Act Recital 27",
+    "AI Act Recital 31",
+    "AI Act Recital 58"
+   ],
+   "retrieval_ms": 26.2,
+   "hit_article": true,
+   "hit_paragraph": true,
+   "rank_article": 3,
+   "rank_paragraph": 3,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q02",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "5",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 43",
+    "AI Act Recital 17",
+    "AI Act Recital 13",
+    "AI Act Recital 56",
+    "AI Act Annex III point 3",
+    "AI Act Annex III point 1"
+   ],
+   "retrieval_ms": 25.2,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q03",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "6",
+     "paragraph": null
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 72",
+    "AI Act Recital 96",
+    "AI Act Recital 73",
+    "AI Act Recital 59",
+    "AI Act Recital 60",
+    "AI Act Art. 49(1)"
+   ],
+   "retrieval_ms": 25.1,
+   "hit_article": false,
+   "hit_paragraph": null,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q04",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "annex",
+     "number": "III",
+     "paragraph": "4"
+    },
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "6",
+     "paragraph": "2"
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 62",
+    "AI Act Recital 58",
+    "AI Act Recital 56",
+    "AI Act Recital 67",
+    "AI Act Recital 72",
+    "AI Act Art. 25(4)"
+   ],
+   "retrieval_ms": 23.0,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q05",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "9",
+     "paragraph": null
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 72",
+    "AI Act Recital 65",
+    "AI Act Art. 9(1)",
+    "AI Act Recital 64",
+    "AI Act Recital 73",
+    "AI Act Recital 71"
+   ],
+   "retrieval_ms": 22.8,
+   "hit_article": true,
+   "hit_paragraph": null,
+   "rank_article": 3,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q06",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "10",
+     "paragraph": null
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 66",
+    "AI Act Recital 67",
+    "AI Act Art. 9(9)",
+    "AI Act Art. 10(1)",
+    "AI Act Art. 10(2)",
+    "AI Act Art. 15(5)"
+   ],
+   "retrieval_ms": 24.6,
+   "hit_article": true,
+   "hit_paragraph": null,
+   "rank_article": 4,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q07",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "14",
+     "paragraph": "4"
+    }
+   ],
+   "retrieved": [
+    "AI Act Art. 14(3)",
+    "AI Act Recital 73",
+    "AI Act Recital 72",
+    "AI Act Recital 93",
+    "AI Act Recital 96",
+    "AI Act Recital 65"
+   ],
+   "retrieval_ms": 23.2,
+   "hit_article": true,
+   "hit_paragraph": false,
+   "rank_article": 1,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q08",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "50",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "GDPR Recital 32",
+    "AI Act Art. 5(1)",
+    "AI Act Recital 29",
+    "AI Act Recital 132",
+    "AI Act Recital 141",
+    "GDPR Art. 7(1)"
+   ],
+   "retrieval_ms": 21.8,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q09",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "50",
+     "paragraph": "4"
+    }
+   ],
+   "retrieved": [
+    "AI Act Art. 50(4)",
+    "AI Act Recital 135",
+    "AI Act Recital 134",
+    "AI Act Art. 50(2)",
+    "AI Act Art. 50(1)",
+    "AI Act Art. 50(6)"
+   ],
+   "retrieval_ms": 21.8,
+   "hit_article": true,
+   "hit_paragraph": true,
+   "rank_article": 1,
+   "rank_paragraph": 1,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q10",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "26",
+     "paragraph": "7"
+    }
+   ],
+   "retrieved": [
+    "AI Act Art. 26(6)",
+    "AI Act Recital 91",
+    "AI Act Recital 92",
+    "AI Act Art. 26(5)",
+    "AI Act Recital 72",
+    "AI Act Recital 73"
+   ],
+   "retrieval_ms": 24.0,
+   "hit_article": true,
+   "hit_paragraph": false,
+   "rank_article": 1,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q11",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "99",
+     "paragraph": "3"
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 59",
+    "AI Act Art. 5(1)",
+    "AI Act Recital 29",
+    "AI Act Recital 44",
+    "AI Act Recital 42",
+    "AI Act Recital 58"
+   ],
+   "retrieval_ms": 23.0,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q12",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "53",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 101",
+    "AI Act Art. 52(6)",
+    "AI Act Recital 162",
+    "AI Act Recital 97",
+    "AI Act Recital 96",
+    "AI Act Recital 164"
+   ],
+   "retrieval_ms": 21.3,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q13",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "4",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 72",
+    "AI Act Recital 20",
+    "AI Act Recital 73",
+    "AI Act Recital 165",
+    "AI Act Art. 26(3)",
+    "AI Act Recital 65"
+   ],
+   "retrieval_ms": 22.9,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q14",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "3",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 11",
+    "AI Act Art. 3(1)",
+    "AI Act Recital 12",
+    "AI Act Art. 3(3)",
+    "AI Act Recital 53",
+    "AI Act Recital 24"
+   ],
+   "retrieval_ms": 22.8,
+   "hit_article": true,
+   "hit_paragraph": true,
+   "rank_article": 2,
+   "rank_paragraph": 2,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q15",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "73",
+     "paragraph": "2"
+    }
+   ],
+   "retrieved": [
+    "AI Act Art. 73(3)",
+    "AI Act Recital 114",
+    "AI Act Art. 73(1)",
+    "AI Act Art. 73(6)",
+    "AI Act Recital 72",
+    "AI Act Art. 72(4)"
+   ],
+   "retrieval_ms": 22.8,
+   "hit_article": true,
+   "hit_paragraph": false,
+   "rank_article": 1,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q16",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "6",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "GDPR Recital 54",
+    "GDPR Recital 47",
+    "GDPR Recital 39",
+    "GDPR Recital 5",
+    "GDPR Recital 11",
+    "GDPR Recital 36"
+   ],
+   "retrieval_ms": 20.3,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q17",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "17",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "AI Act Art. 59(1)",
+    "GDPR Art. 33(1)",
+    "GDPR Recital 65",
+    "GDPR Recital 63",
+    "GDPR Recital 68",
+    "GDPR Art. 15(1)"
+   ],
+   "retrieval_ms": 23.3,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q18",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "33",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "GDPR Art. 33(1)",
+    "GDPR Art. 65(5)",
+    "GDPR Recital 30",
+    "AI Act Recital 35",
+    "GDPR Recital 86",
+    "GDPR Art. 42(6)"
+   ],
+   "retrieval_ms": 21.2,
+   "hit_article": true,
+   "hit_paragraph": true,
+   "rank_article": 1,
+   "rank_paragraph": 1,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q19",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "7",
+     "paragraph": null
+    }
+   ],
+   "retrieved": [
+    "GDPR Recital 65",
+    "GDPR Recital 42",
+    "GDPR Recital 41",
+    "GDPR Art. 7(2)",
+    "AI Act Art. 60(5)",
+    "GDPR Art. 60(4)"
+   ],
+   "retrieval_ms": 21.0,
+   "hit_article": true,
+   "hit_paragraph": null,
+   "rank_article": 4,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q20",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "37",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "GDPR Art. 37(2)",
+    "GDPR Art. 36(4)",
+    "GDPR Recital 36",
+    "GDPR Art. 47(2)",
+    "GDPR Art. 38(3)",
+    "GDPR Art. 38(1)"
+   ],
+   "retrieval_ms": 21.4,
+   "hit_article": true,
+   "hit_paragraph": false,
+   "rank_article": 1,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q21",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "9",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "GDPR Recital 10",
+    "GDPR Recital 50",
+    "GDPR Recital 73",
+    "AI Act Art. 4a(1)",
+    "GDPR Recital 88",
+    "GDPR Recital 31"
+   ],
+   "retrieval_ms": 23.8,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q22",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "13",
+     "paragraph": null
+    }
+   ],
+   "retrieved": [
+    "GDPR Recital 36",
+    "GDPR Recital 47",
+    "GDPR Recital 39",
+    "GDPR Art. 47(2)",
+    "GDPR Recital 110",
+    "GDPR Recital 113"
+   ],
+   "retrieval_ms": 21.2,
+   "hit_article": false,
+   "hit_paragraph": null,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q23",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "35",
+     "paragraph": null
+    }
+   ],
+   "retrieved": [
+    "GDPR Art. 35(1)",
+    "GDPR Recital 91",
+    "GDPR Recital 89",
+    "GDPR Art. 35(10)",
+    "GDPR Art. 34(3)",
+    "GDPR Recital 93"
+   ],
+   "retrieval_ms": 22.1,
+   "hit_article": true,
+   "hit_paragraph": null,
+   "rank_article": 1,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q24",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "20",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "GDPR Recital 67",
+    "GDPR Art. 20(1)",
+    "AI Act Art. 50(1)",
+    "GDPR Recital 68",
+    "GDPR Recital 60",
+    "GDPR Recital 109"
+   ],
+   "retrieval_ms": 25.4,
+   "hit_article": true,
+   "hit_paragraph": true,
+   "rank_article": 2,
+   "rank_paragraph": 2,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q25",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "83",
+     "paragraph": "5"
+    }
+   ],
+   "retrieved": [
+    "AI Act Art. 100(1)",
+    "AI Act Art. 100(5)",
+    "GDPR Art. 70(1)",
+    "GDPR Recital 88",
+    "GDPR Art. 83(2)",
+    "AI Act Recital 168"
+   ],
+   "retrieval_ms": 22.7,
+   "hit_article": true,
+   "hit_paragraph": false,
+   "rank_article": 5,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q26",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "8",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "GDPR Art. 8(1)",
+    "GDPR Recital 58",
+    "GDPR Recital 37",
+    "AI Act Recital 9",
+    "GDPR Art. 7(3)",
+    "GDPR Recital 65"
+   ],
+   "retrieval_ms": 21.8,
+   "hit_article": true,
+   "hit_paragraph": true,
+   "rank_article": 1,
+   "rank_paragraph": 1,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q27",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "recital",
+     "number": "26",
+     "paragraph": null
+    }
+   ],
+   "retrieved": [
+    "GDPR Recital 26",
+    "AI Act Art. 4a(1)",
+    "AI Act Art. 59(1)",
+    "AI Act Art. 26(10)",
+    "AI Act Recital 38",
+    "GDPR Recital 171"
+   ],
+   "retrieval_ms": 22.8,
+   "hit_article": true,
+   "hit_paragraph": null,
+   "rank_article": 1,
+   "rank_paragraph": null,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q28",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "45",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "GDPR Recital 115",
+    "GDPR Recital 103",
+    "GDPR Recital 107",
+    "GDPR Recital 104",
+    "GDPR Recital 112",
+    "GDPR Recital 106"
+   ],
+   "retrieval_ms": 26.9,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q29",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "28",
+     "paragraph": "3"
+    }
+   ],
+   "retrieved": [
+    "GDPR Art. 28(1)",
+    "GDPR Recital 81",
+    "GDPR Art. 28(3)",
+    "GDPR Recital 108",
+    "GDPR Art. 28(4)",
+    "GDPR Art. 82(3)"
+   ],
+   "retrieval_ms": 22.3,
+   "hit_article": true,
+   "hit_paragraph": true,
+   "rank_article": 1,
+   "rank_paragraph": 3,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q30",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "25",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "GDPR Recital 63",
+    "GDPR Recital 91",
+    "GDPR Recital 78",
+    "GDPR Art. 18(1)",
+    "GDPR Art. 34(3)",
+    "AI Act Art. 59(2)"
+   ],
+   "retrieval_ms": 21.9,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q31",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "22",
+     "paragraph": null
+    },
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "86",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "AI Act Recital 58",
+    "AI Act Recital 95",
+    "AI Act Annex XIV point 2",
+    "AI Act Recital 56",
+    "AI Act Recital 17",
+    "AI Act Art. 3(1)"
+   ],
+   "retrieval_ms": 24.2,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q32",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "4a",
+     "paragraph": "1"
+    }
+   ],
+   "retrieved": [
+    "AI Act Art. 4a(1)",
+    "AI Act Recital 67",
+    "AI Act Recital 69",
+    "AI Act Recital 58",
+    "AI Act Recital 65",
+    "AI Act Recital 54"
+   ],
+   "retrieval_ms": 25.4,
+   "hit_article": true,
+   "hit_paragraph": true,
+   "rank_article": 1,
+   "rank_paragraph": 1,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q33",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "2",
+     "paragraph": "7"
+    }
+   ],
+   "retrieved": [
+    "AI Act Art. 26(10)",
+    "AI Act Art. 59(2)",
+    "AI Act Art. 5(1)",
+    "AI Act Art. 4a(1)",
+    "AI Act Recital 12",
+    "AI Act Recital 68"
+   ],
+   "retrieval_ms": 22.8,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q34",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "26",
+     "paragraph": "9"
+    },
+    {
+     "regulation": "GDPR",
+     "type": "article",
+     "number": "35",
+     "paragraph": null
+    }
+   ],
+   "retrieved": [
+    "AI Act Annex VIII point C.1",
+    "AI Act Recital 96",
+    "AI Act Art. 27(1)",
+    "AI Act Recital 131",
+    "AI Act Recital 73",
+    "AI Act Recital 72"
+   ],
+   "retrieval_ms": 25.6,
+   "hit_article": false,
+   "hit_paragraph": false,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "hit_article_text": false,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q35",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": false,
+   "expected": [
+    {
+     "regulation": "AI_ACT",
+     "type": "article",
+     "number": "27",
+     "paragraph": "4"
+    }
+   ],
+   "retrieved": [
+    "AI Act Art. 27(4)",
+    "GDPR Recital 89",
+    "GDPR Recital 84",
+    "AI Act Art. 27(2)",
+    "GDPR Art. 35(1)",
+    "GDPR Recital 91"
+   ],
+   "retrieval_ms": 22.1,
+   "hit_article": true,
+   "hit_paragraph": true,
+   "rank_article": 1,
+   "rank_paragraph": 1,
+   "hit_article_text": true,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q36",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": true,
+   "expected": [],
+   "retrieved": [
+    "GDPR Art. 47(2)",
+    "GDPR Recital 109",
+    "GDPR Art. 4(19)",
+    "AI Act Recital 9",
+    "AI Act Art. 101(1)",
+    "AI Act Art. 99(2)"
+   ],
+   "retrieval_ms": 23.8,
+   "hit_article": null,
+   "hit_paragraph": null,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q37",
+   "language": "en",
+   "detected_language": "en",
+   "out_of_scope": true,
+   "expected": [],
+   "retrieved": [
+    "GDPR Recital 31",
+    "AI Act Recital 3",
+    "AI Act Recital 155",
+    "GDPR Recital 7",
+    "AI Act Recital 84",
+    "AI Act Recital 8"
+   ],
+   "retrieval_ms": 21.9,
+   "hit_article": null,
+   "hit_paragraph": null,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q38",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": true,
+   "expected": [],
+   "retrieved": [
+    "AI Act Art. 99(5)",
+    "GDPR Recital 75",
+    "AI Act Art. 3(65)",
+    "GDPR Recital 6",
+    "AI Act Art. 14(5)",
+    "GDPR Recital 13"
+   ],
+   "retrieval_ms": 22.7,
+   "hit_article": null,
+   "hit_paragraph": null,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q39",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": true,
+   "expected": [],
+   "retrieved": [
+    "GDPR Art. 36(2)",
+    "AI Act Art. 75c(5)",
+    "AI Act Art. 75c(8)",
+    "GDPR Art. 66(1)",
+    "GDPR Art. 12(3)",
+    "AI Act Art. 67(3)"
+   ],
+   "retrieval_ms": 24.6,
+   "hit_article": null,
+   "hit_paragraph": null,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  },
+  {
+   "id": "q40",
+   "language": "de",
+   "detected_language": "de",
+   "out_of_scope": true,
+   "expected": [],
+   "retrieved": [
+    "AI Act Annex XI point 1.2",
+    "AI Act Annex IV point 2",
+    "AI Act Annex XIII",
+    "AI Act Recital 107",
+    "AI Act Recital 112",
+    "AI Act Recital 56"
+   ],
+   "retrieval_ms": 22.8,
+   "hit_article": null,
+   "hit_paragraph": null,
+   "rank_article": null,
+   "rank_paragraph": null,
+   "answer": null,
+   "judge": null,
+   "judge_error": null,
+   "llm_error": null
+  }
+ ]
+}

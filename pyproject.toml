@@ -40,6 +40,8 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
+# The project root is on the path so tests can import the evaluation code in eval/.
+pythonpath = ["."]
 filterwarnings = [
     # BM25Retriever only exists in langchain-community (also re-exported by langchain-classic);
     # there is no non-deprecated import yet. Silence exactly this sunset notice.
