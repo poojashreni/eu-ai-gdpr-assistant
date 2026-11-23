@@ -25,8 +25,9 @@ def _run(question: str) -> None:
     if not question:
         st.session_state["result"] = ui.AskResult(error="Please type a question first.")
         return
+    forwarded_for = st.context.headers.get("X-Forwarded-For")
     with st.spinner("Searching the legal texts..."):
-        st.session_state["result"] = ui.ask(question)
+        st.session_state["result"] = ui.ask(question, forwarded_for=forwarded_for)
 
 
 st.title("EU AI Act & GDPR Assistant")

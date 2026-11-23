@@ -78,14 +78,21 @@ def _error_message(response: httpx.Response) -> str:
     return GENERIC_ERROR
 
 
-def ask(question: str, client: httpx.Client | None = None) -> AskResult:
-    """Send the question to POST /ask; never raises, errors come back as a message."""
+def ask(
+    question: str, client: httpx.Client | None = None, forwarded_for: str | None = None
+) -> AskResult:
+    """Send the question to POST /ask; never raises, errors come back as a message.
+
+    forwarded_for is the visitor's X-Forwarded-For value, passed on unchanged so the API can
+    rate-limit per visitor instead of seeing only this server's loopback address.
+    """
+    headers = {"X-Forwarded-For": forwarded_for} if forwarded_for else None
     try:
         if client is not None:
-            response = client.post("/ask", json={"question": question})
+            response = client.post("/ask", json={"question": question}, headers=headers)
         else:
             with _client() as http:
-                response = http.post("/ask", json={"question": question})
+                response = http.post("/ask", json={"question": question}, headers=headers)
     except httpx.HTTPError:
         return AskResult(error=UNAVAILABLE_MESSAGE)
     if response.status_code != 200:

@@ -63,6 +63,28 @@ def test_ask_sends_question_to_ask_endpoint():
     assert b"Hello?" in seen["body"]
 
 
+def test_ask_forwards_x_forwarded_for_when_given():
+    seen = {}
+
+    def handler(request):
+        seen["xff"] = request.headers.get("x-forwarded-for")
+        return httpx.Response(200, json=ANSWER)
+
+    ui.ask("Hello?", client=client_for(handler), forwarded_for="203.0.113.7, 10.0.0.1")
+    assert seen["xff"] == "203.0.113.7, 10.0.0.1"
+
+
+def test_ask_omits_x_forwarded_for_when_none():
+    seen = {}
+
+    def handler(request):
+        seen["has"] = "x-forwarded-for" in request.headers
+        return httpx.Response(200, json=ANSWER)
+
+    ui.ask("Hello?", client=client_for(handler))
+    assert seen["has"] is False
+
+
 def test_citation_links_are_markdown_with_title():
     links = ui.citation_links(Answer(**ANSWER))
     assert links == [
@@ -180,7 +202,7 @@ def test_page_shows_title_and_notices(app):
 
 
 def test_example_question_renders_answer_with_citation_link(app, monkeypatch):
-    monkeypatch.setattr(ui, "ask", lambda q, client=None: ui.AskResult(answer=Answer(**ANSWER)))
+    monkeypatch.setattr(ui, "ask", lambda q, client=None, forwarded_for=None: ui.AskResult(answer=Answer(**ANSWER)))
     app.run()
     next(b for b in app.button if b.label == ui.EXAMPLES[2][1]).click().run()
     assert not app.exception
@@ -192,7 +214,7 @@ def test_error_is_shown_as_message(app, monkeypatch):
     monkeypatch.setattr(
         ui,
         "ask",
-        lambda q, client=None: ui.AskResult(error="Too many questions, please try again later."),
+        lambda q, client=None, forwarded_for=None: ui.AskResult(error="Too many questions, please try again later."),
     )
     app.run()
     app.text_input[0].set_value("anything")
