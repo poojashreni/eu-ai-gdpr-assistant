@@ -98,18 +98,79 @@ def test_rate_limit_window_slides():
     assert client.post("/ask", json={"question": "later 2"}).status_code == 429
 
 
-def test_x_forwarded_for_first_hop():
-    client = make_client(rate_limit_per_hour=1)
-    headers_a = {"X-Forwarded-For": "1.1.1.1, 10.0.0.1"}
-    headers_b = {"X-Forwarded-For": "2.2.2.2, 10.0.0.1"}
-    assert client.post("/ask", json={"question": "q1"}, headers=headers_a).status_code == 200
-    assert client.post("/ask", json={"question": "q2"}, headers=headers_a).status_code == 429
-    assert client.post("/ask", json={"question": "q3"}, headers=headers_b).status_code == 200
-    # Same first hop behind a different proxy is still the same client.
-    other_proxy = {"X-Forwarded-For": "1.1.1.1, 10.9.9.9"}
-    assert client.post("/ask", json={"question": "q4"}, headers=other_proxy).status_code == 429
+def test_client_ip_from_trusted_proxy_hop():
+    client = make_client(rate_limit_per_hour=1)  # trusted_proxy_hops defaults to 1
+    a = {"X-Forwarded-For": "10.0.0.1"}
+    b = {"X-Forwarded-For": "2.2.2.2"}
+    assert client.post("/ask", json={"question": "q1"}, headers=a).status_code == 200
+    assert client.post("/ask", json={"question": "q2"}, headers=a).status_code == 429
+    assert client.post("/ask", json={"question": "q3"}, headers=b).status_code == 200
     # Without the header the socket address is used (a third client).
     assert client.post("/ask", json={"question": "q5"}).status_code == 200
+
+
+def test_client_ip_hops_settings():
+    two = make_client(rate_limit_per_hour=1, trusted_proxy_hops=2)
+    h1 = {"X-Forwarded-For": "9.9.9.9, 1.1.1.1, 10.0.0.1"}
+    h2 = {"X-Forwarded-For": "8.8.8.8, 1.1.1.1, 10.0.0.2"}  # same 2nd-from-right entry
+    assert two.post("/ask", json={"question": "a"}, headers=h1).status_code == 200
+    assert two.post("/ask", json={"question": "b"}, headers=h2).status_code == 429
+    # Fewer entries than hops: fall back to the socket address.
+    assert (
+        two.post("/ask", json={"question": "c"}, headers={"X-Forwarded-For": "7.7.7.7"}).status_code
+        == 200
+    )
+    # 0 hops: the header is ignored entirely.
+    zero = make_client(rate_limit_per_hour=1, trusted_proxy_hops=0)
+    assert (
+        zero.post(
+            "/ask", json={"question": "a"}, headers={"X-Forwarded-For": "1.1.1.1"}
+        ).status_code
+        == 200
+    )
+    assert (
+        zero.post(
+            "/ask", json={"question": "b"}, headers={"X-Forwarded-For": "2.2.2.2"}
+        ).status_code
+        == 429
+    )
+
+
+def test_spoofed_xff_prefix_does_not_bypass_limit():
+    client = make_client(rate_limit_per_hour=2)
+    codes = [
+        client.post(
+            "/ask",
+            json={"question": f"q{i}"},
+            headers={"X-Forwarded-For": f"1.2.3.{i}, 203.0.113.7"},
+        ).status_code
+        for i in range(4)
+    ]
+    assert codes == [200, 200, 429, 429]
+
+
+def test_ip_table_is_bounded(monkeypatch):
+    monkeypatch.setattr("assistant.api.MAX_TRACKED_IPS", 3)
+    app = create_app(FakeAnswerFn(), Settings(_env_file=None, rate_limit_per_hour=1), clock=Clock())
+    client = TestClient(app)
+    for i in range(10):
+        r = client.post(
+            "/ask", json={"question": f"q{i}"}, headers={"X-Forwarded-For": f"5.5.5.{i}"}
+        )
+        assert r.status_code == 200
+    # Only the 3 most recent IPs are remembered: an old one starts fresh, a recent one is limited.
+    assert (
+        client.post(
+            "/ask", json={"question": "old"}, headers={"X-Forwarded-For": "5.5.5.0"}
+        ).status_code
+        == 200
+    )
+    assert (
+        client.post(
+            "/ask", json={"question": "new"}, headers={"X-Forwarded-For": "5.5.5.9"}
+        ).status_code
+        == 429
+    )
 
 
 def test_daily_cap():
@@ -185,6 +246,13 @@ def test_health(chunks_file):
     assert body["status"] == "ok"
     assert body["chunks"] == 2
     assert body["text_as_of"] == "AI Act 2026-07-27; GDPR 2016-05-04"
+
+
+def test_no_chain_503_does_not_use_rate_slot():
+    app = create_app(settings=Settings(_env_file=None, rate_limit_per_hour=1), clock=Clock())
+    client = TestClient(app)  # no lifespan run: no chain
+    for _ in range(3):
+        assert client.post("/ask", json={"question": "q"}).status_code == 503  # never 429
 
 
 def test_app_without_key_starts_and_ask_returns_503(monkeypatch, chunks_file):

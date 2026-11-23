@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 RATE_LIMIT_WINDOW_SECONDS = 3600
 CACHE_SIZE = 256
+MAX_TRACKED_IPS = 10_000  # bound on the per-IP table; the least recently seen IP is evicted
 UNAVAILABLE_MESSAGE = "The demo has reached its usage limit, please try again later."
 RATE_LIMIT_MESSAGE = "Too many questions, please try again later."
 DAILY_CAP_MESSAGE = "The demo has reached its daily limit, please try again tomorrow."
@@ -41,7 +42,7 @@ class Guard:
         self._settings = settings
         self._clock = clock
         self._lock = threading.Lock()
-        self._hits: dict[str, deque[float]] = {}
+        self._hits: OrderedDict[str, deque[float]] = OrderedDict()
         self._cache: OrderedDict[str, Answer] = OrderedDict()
         self._day = self._today()
         self._used_today = 0
@@ -53,16 +54,17 @@ class Guard:
         """Count this request for `ip`, or raise 429 when it already asked too often."""
         now = self._clock()
         with self._lock:
-            hits = self._hits.setdefault(ip, deque())
+            hits = self._hits.get(ip)
+            if hits is None:
+                hits = self._hits[ip] = deque()
+                while len(self._hits) > MAX_TRACKED_IPS:  # O(1) eviction, oldest first
+                    self._hits.popitem(last=False)
+            self._hits.move_to_end(ip)
             while hits and hits[0] <= now - RATE_LIMIT_WINDOW_SECONDS:
                 hits.popleft()
             if len(hits) >= self._settings.rate_limit_per_hour:
                 raise HTTPException(status_code=429, detail=RATE_LIMIT_MESSAGE)
             hits.append(now)
-            if len(self._hits) > 10_000:  # forget IPs whose window is empty
-                stale = [k for k, v in self._hits.items() if not v or v[-1] <= now - 3600]
-                for key in stale:
-                    del self._hits[key]
 
     def cached(self, key: str) -> Answer | None:
         with self._lock:
@@ -89,12 +91,21 @@ class Guard:
                 self._cache.popitem(last=False)
 
 
-def client_ip(request: Request) -> str:
-    forwarded = request.headers.get("x-forwarded-for", "")
-    first_hop = forwarded.split(",")[0].strip()
-    if first_hop:
-        return first_hop
-    return request.client.host if request.client else "unknown"
+def client_ip(request: Request, trusted_proxy_hops: int) -> str:
+    """The client address as seen by our own trusted proxy.
+
+    Each trusted proxy appends the address it saw to X-Forwarded-For, so the entry
+    `trusted_proxy_hops` places from the right is the one our outermost proxy wrote. Anything
+    further left is client-controlled and ignored. 0 hops: use the socket address.
+    """
+    socket_ip = request.client.host if request.client else "unknown"
+    if trusted_proxy_hops <= 0:
+        return socket_ip
+    entries = [e.strip() for e in request.headers.get("x-forwarded-for", "").split(",")]
+    entries = [e for e in entries if e]
+    if len(entries) < trusted_proxy_hops:
+        return socket_ip
+    return entries[-trusted_proxy_hops]
 
 
 def _text_as_of(path: Path) -> str:
@@ -175,14 +186,14 @@ def create_app(
                     f"The question is too long (limit: {settings.max_question_chars} characters)."
                 ),
             )
-        guard.check_rate(client_ip(request))
+        fn = app.state.answer_fn
+        if fn is None:  # no chain: say so before the request uses up a rate-limit slot
+            raise HTTPException(status_code=503, detail=UNAVAILABLE_MESSAGE)
+        guard.check_rate(client_ip(request, settings.trusted_proxy_hops))
         key = question.lower()
         cached = guard.cached(key)
         if cached is not None:
             return cached
-        fn = app.state.answer_fn
-        if fn is None:
-            raise HTTPException(status_code=503, detail=UNAVAILABLE_MESSAGE)
         guard.reserve_call()
         try:
             answer = fn(question)

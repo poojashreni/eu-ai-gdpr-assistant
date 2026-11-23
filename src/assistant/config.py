@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     rate_limit_per_hour: int = 10
     daily_cap: int = 200
     max_question_chars: int = 1000
+    trusted_proxy_hops: int = 1
     api_url: str = "http://localhost:8000"
 
 
