@@ -10,6 +10,8 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
+    google_api_key: str | None = None
+    openai_api_key: str | None = None
     llm_provider: Literal["gemini", "openai"] = "gemini"
     gemini_model: str = "gemini-2.5-flash"
     openai_model: str = "gpt-4o-mini"

@@ -71,6 +71,22 @@ An assistant should quote the law as it applies today, so **articles and annexes
 
 ## §5 RAG chain
 
+**The idea.** Retrieval gives us the right passages; the chain makes an LLM turn them into a readable answer *without* letting it improvise. This is "grounding": the model is a writer, not a source of facts. The facts come from the passages we hand it.
+
+**What the prompt does.** It is deliberately strict. We number the passages (`[1] AI Act Art. 6(2) (en): ...`) and tell the model: answer only from these, write in German or English, put a marker like `[2]` after every claim, and if the passages don't answer the question, reply with exactly `NOT_COVERED`. The numbers matter: they give the model a short, unambiguous way to point at its source, and give us something we can check by machine. The language is detected from the question with `langdetect`. A French question is answered in English: we only promise German and English.
+
+**From `[n]` to citations.** After the model answers, `parse_citations` scans the text for markers. A marker is valid only if its number is between 1 and the number of passages we sent. Valid ones are mapped back to the passage's metadata and become citations (label like "GDPR Recital 26" plus the EUR-Lex link), listed once each in order of first use. Invalid ones, like `[9]` when we sent 6 passages, are removed. Grouped markers like `[1, 3]` are rewritten as `[1][3]`.
+
+**Why refuse.** An LLM that cannot find an answer will often write a confident one anyway. We catch that in two ways: the model itself says `NOT_COVERED`, or its answer contains no valid citation at all. In both cases we throw the text away and return a fixed "not covered" message with no citations. An uncited answer is never shown as if it were trustworthy. The cost: sometimes a correct but uncited answer is refused. For a legal assistant that is the safer error.
+
+**Temperature 0.** Temperature controls how adventurous the model is when picking the next word. At 0 it always picks the most likely one, so the same question gives (nearly) the same answer, which also makes evaluation in stage 6 fairer.
+
+**Tokens and latency.** Models read and write *tokens* (word pieces) and providers bill and rate-limit by them. We record input and output tokens from the model's reply metadata (0 if absent) and the wall-clock time of retrieval plus the model call. Both go into the `Answer` object, so the API can show them and we can watch cost.
+
+**What `prompt | llm` means.** This is LCEL (LangChain Expression Language). The `|` pipes the output of one step into the next, like a shell pipe: the prompt template fills in the placeholders and produces messages, and those messages flow into the model. Any step with `invoke` can join the pipe, which is why tests can swap in a fake model.
+
+**Check yourself:** (1) Why number the passages instead of asking the model to name the article? (2) What happens to an answer whose only marker is `[9]`? (3) Why is refusing a correct-but-uncited answer acceptable here?
+
 ## §6 Evaluation
 
 ## §7 API + UI
