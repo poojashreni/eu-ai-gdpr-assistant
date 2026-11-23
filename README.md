@@ -19,8 +19,8 @@ A bilingual (German/English) retrieval-augmented assistant that answers question
 ## What it does
 
 - Ask in German or English (other languages are answered in English). Retrieval searches both language versions of the law and removes duplicates, so a German question can be answered from the English text and the other way round.
-- Every answer carries numbered citations such as "GDPR Art. 17(1)" with a link to EUR-Lex. A model answer without a valid citation is turned into a "not covered" reply, never shown as a confident uncited answer.
-- Out-of-scope questions are refused.
+- The UI lists the cited provisions as sources (not every retrieved passage). Every answer carries numbered citations such as "GDPR Art. 17(1)" with a link to EUR-Lex. A model answer without a valid citation is turned into a "not covered" reply, never shown as a confident uncited answer.
+- The assistant is instructed to refuse out-of-scope questions (refusal accuracy: pending full evaluation).
 - FastAPI service with a per-IP rate limit, a daily cap and an answer cache; Streamlit UI on top.
 
 ## Architecture
@@ -91,7 +91,7 @@ uv run python eval/run_eval.py                           # full run incl. LLM ju
 uv run python eval/run_eval.py --chunking naive          # baseline for the chunking comparison
 ```
 
-Results are written to `eval/results.md` and `eval/results_per_question.md`. Tests (`uv run pytest -q`, 131 tests) never call a real LLM or download the embedding model.
+Results are written to `eval/results.md` and `eval/results_per_question.md`. Tests (`uv run pytest -q`, 134 tests) never call a real LLM or download the embedding model.
 
 ## Limitations
 
@@ -106,6 +106,8 @@ Results are written to `eval/results.md` and `eval/results_per_question.md`. Tes
 ## Data source and licence
 
 Texts come from [EUR-Lex](https://eur-lex.europa.eu), the EU's official law portal: Regulation (EU) 2024/1689 (AI Act) and Regulation (EU) 2016/679 (GDPR). Source: EUR-Lex, &copy; European Union. Reuse is permitted provided the source is acknowledged; only the legal text published in the Official Journal is authentic. Raw files and their versions are listed in `data/raw/sources.json`.
+
+The code in this repository is released under the [MIT licence](LICENSE). The EUR-Lex texts in `data/raw` are &copy; European Union and reused under the EU's reuse terms: see the [EUR-Lex legal notice](https://eur-lex.europa.eu/content/legal-notice/legal-notice.html).
 
 ## Disclaimer
 
