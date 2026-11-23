@@ -36,7 +36,7 @@ pinned: false
 
 ## 2. Create the GitHub repository
 
-1. https://github.com/new -> name `eu-ai-gdpr-assistant`, Public, **do not** add a README/.gitignore/licence (the repo already has them).
+1. https://github.com/new -> name `eu-ai-gdpr-assistant`, Public, **do not** add a README/.gitignore/licence (the repo already has a README, a `.gitignore` and an MIT `LICENSE` for the code).
 2. In this project folder:
    ```bash
    git remote add origin https://github.com/<your-user>/eu-ai-gdpr-assistant.git
@@ -59,7 +59,7 @@ Without these the pipeline still runs lint + tests; the eval-smoke and deploy jo
 
 ## 4. First deploy
 
-Push to `main` (or re-run the latest workflow under **Actions**). The `deploy` job force-pushes the repo to the Space's `main` branch. Then:
+Push to `main` (or re-run the latest workflow under **Actions**). The `deploy` job force-pushes a clean single-commit snapshot of the repo to the Space's `main` branch; `docs/superpowers/` (planning notes) is excluded from that snapshot, and the token is passed as an HTTP header, never in the URL. Then:
 
 1. Open the Space -> **Logs**. The first build takes about 10 to 15 minutes (installs dependencies, builds the index, downloads the embedding model into the image). Later builds reuse cached layers.
 2. When the status says **Running**, open `https://<your-user>-eu-ai-gdpr-assistant.hf.space` and ask a question.
