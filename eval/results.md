@@ -7,7 +7,7 @@ Per-question details: [`results_per_question.md`](results_per_question.md).
 
 ## Runs
 
-- **structured**: date=2026-11-23, items=40, mode=retrieval-only, top_k=6, bm25_weight=0.4, vector_weight=0.6, embed_model=intfloat/multilingual-e5-small, llm=none, indexed_documents=3638, chunks=3044
+- **structured**: date=2026-11-24, items=40, mode=answers+judge, top_k=6, bm25_weight=0.4, vector_weight=0.6, embed_model=intfloat/multilingual-e5-small, llm=gemini/gemini-3.5-flash, indexed_documents=3638, chunks=3044
 - **naive**: date=2026-11-23, items=40, mode=retrieval-only, top_k=6, bm25_weight=0.4, vector_weight=0.6, embed_model=intfloat/multilingual-e5-small, llm=none, indexed_documents=2406, chunks=2406
 
 ## Metrics
@@ -17,13 +17,13 @@ Per-question details: [`results_per_question.md`](results_per_question.md).
 | hit@k (article) | 82.9% (n=35) | 54.3% (n=35) |
 | hit@k (paragraph) | 64.3% (n=28) | 32.1% (n=28) |
 | hit@k (article, by text covered) | n/a (same as article) | 57.1% (n=35) |
-| retrieval latency p50 / p95 | 26 / 30 ms (n=40) | 23 / 26 ms (n=40) |
-| citation correctness | pending — needs GOOGLE_API_KEY | pending — needs GOOGLE_API_KEY |
-| refusal accuracy | pending — needs GOOGLE_API_KEY | pending — needs GOOGLE_API_KEY |
-| faithfulness (judge, 1-5) | pending — needs GOOGLE_API_KEY | pending — needs GOOGLE_API_KEY |
-| relevance (judge, 1-5) | pending — needs GOOGLE_API_KEY | pending — needs GOOGLE_API_KEY |
-| answer latency p50 / p95 | pending — needs GOOGLE_API_KEY | pending — needs GOOGLE_API_KEY |
-| avg tokens per answer (in + out) | pending — needs GOOGLE_API_KEY | pending — needs GOOGLE_API_KEY |
+| retrieval latency p50 / p95 | 27 / 84 ms (n=40) | 23 / 26 ms (n=40) |
+| citation correctness | 75.0% (n=8) | pending — needs GOOGLE_API_KEY |
+| refusal accuracy | 100.0% (n=8) | pending — needs GOOGLE_API_KEY |
+| faithfulness (judge, 1-5) | 5.00 / 5 (n=8) | pending — needs GOOGLE_API_KEY |
+| relevance (judge, 1-5) | 5.00 / 5 (n=8) | pending — needs GOOGLE_API_KEY |
+| answer latency p50 / p95 | 28721 / 57170 ms (n=8) | pending — needs GOOGLE_API_KEY |
+| avg tokens per answer (in + out) | 2228 (n=8) | pending — needs GOOGLE_API_KEY |
 
 ## How to read this
 

@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     google_api_key: SecretStr | None = None
     openai_api_key: SecretStr | None = None
     llm_provider: Literal["gemini", "openai"] = "gemini"
-    gemini_model: str = "gemini-2.5-flash"
+    gemini_model: str = "gemini-3.5-flash"
     openai_model: str = "gpt-4o-mini"
     embed_model: str = "intfloat/multilingual-e5-small"
     chroma_dir: Path = Path("data/chroma")

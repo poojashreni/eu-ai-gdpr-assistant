@@ -1,13 +1,13 @@
 {
  "meta": {
-  "date": "2026-11-23",
+  "date": "2026-11-24",
   "items": 40,
-  "mode": "retrieval-only",
+  "mode": "answers+judge",
   "top_k": 6,
   "bm25_weight": 0.4,
   "vector_weight": 0.6,
   "embed_model": "intfloat/multilingual-e5-small",
-  "llm": "none",
+  "llm": "gemini/gemini-3.5-flash",
   "indexed_documents": 3638,
   "chunks": 3044
  },
@@ -25,16 +25,35 @@
   },
   "hit_article_text": null,
   "retrieval_ms": {
-   "p50": 25.55,
-   "p95": 30.205,
+   "p50": 27.4,
+   "p95": 84.43999999999906,
    "n": 40
   },
-  "citation_correct": null,
-  "refusal_accuracy": null,
-  "faithfulness": null,
-  "relevance": null,
-  "answer_ms": null,
-  "avg_tokens": null
+  "citation_correct": {
+   "value": 0.75,
+   "n": 8
+  },
+  "refusal_accuracy": {
+   "value": 1.0,
+   "n": 8
+  },
+  "faithfulness": {
+   "value": 5.0,
+   "n": 8
+  },
+  "relevance": {
+   "value": 5.0,
+   "n": 8
+  },
+  "answer_ms": {
+   "p50": 28721.0,
+   "p95": 57170.05000000001,
+   "n": 8
+  },
+  "avg_tokens": {
+   "value": 2228.375,
+   "n": 8
+  }
  },
  "records": [
   {
@@ -58,13 +77,71 @@
     "AI Act Recital 29",
     "AI Act Recital 44"
    ],
-   "retrieval_ms": 30.2,
+   "retrieval_ms": 29.4,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 3,
    "rank_paragraph": 3,
-   "answer": null,
-   "judge": null,
+   "answer": {
+    "answer": "Based on the provided passages, the prohibited (banned) AI practices and uses include:\n\n* **Social scoring:** AI systems evaluating or classifying natural persons based on social behaviour or personal characteristics that lead to detrimental or unfavourable treatment in unrelated social contexts, or treatment that is unjustified or disproportionate to the gravity of their social behaviour [1][3].\n* **Manipulative, exploitative, and social control practices:** AI systems that materially distort a person's behaviour in a manner that causes or is likely to cause significant harm [2][5]. This includes exploiting vulnerabilities of individuals or groups due to age, disability, or specific social/economic situations [5].\n* **Criminal risk assessments based solely on profiling:** Placing on the market, putting into service, or using AI systems to assess or predict a natural person's risk of committing a criminal offence based solely on profiling or assessing their personality traits and characteristics (except when supporting human assessment based on objective and verifiable facts directly linked to criminal activity) [3].\n* **Emotion recognition in workplace and education:** Placing on the market, putting into service, or using AI systems intended to detect the emotional state of individuals in workplace and education contexts (except when strictly used for medical or safety reasons) [6].",
+    "language": "en",
+    "citations": [
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "31",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689#rct_31",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "5",
+      "paragraph": "1",
+      "title": "Prohibited AI practices",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727#art_5",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "28",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689#rct_28",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "29",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689#rct_29",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "44",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689#rct_44",
+      "language": "en"
+     }
+    ],
+    "refused": false,
+    "latency_ms": 22460,
+    "input_tokens": 1409,
+    "output_tokens": 1115
+   },
+   "judge": {
+    "faithfulness": 5,
+    "relevance": 5,
+    "reason": "The answer accurately lists all prohibited AI practices mentioned in the provided passages with precise context and exceptions."
+   },
    "judge_error": null,
    "llm_error": null
   },
@@ -89,13 +166,44 @@
     "AI Act Recital 57",
     "AI Act Art. 50(3)"
    ],
-   "retrieval_ms": 27.3,
+   "retrieval_ms": 48.9,
    "hit_article": false,
    "hit_paragraph": false,
    "rank_article": null,
    "rank_paragraph": null,
-   "answer": null,
-   "judge": null,
+   "answer": {
+    "answer": "Nein, das Inverkehrbringen, die Inbetriebnahme oder die Verwendung von KI-Systemen, die den emotionalen Zustand von Einzelpersonen in Situationen ableiten sollen, die mit dem Arbeitsplatz in Zusammenhang stehen, sollte verboten sein [1]. \n\nDer Begriff des Emotionserkennungssystems umfasst jedoch nicht physische Zustände wie Schmerz oder Ermüdung (wie beispielsweise Systeme zur Erkennung von Ermüdung bei Berufspiloten oder -fahrern zur Unfallverhütung) sowie die bloße Erkennung offensichtlicher Ausdrucksformen, Gesten und Bewegungen, es sei denn, diese werden speziell zum Erkennen oder Ableiten von Emotionen verwendet [2].",
+    "language": "de",
+    "citations": [
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "44",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R1689#rct_44",
+      "language": "de"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "18",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R1689#rct_18",
+      "language": "de"
+     }
+    ],
+    "refused": false,
+    "latency_ms": 36934,
+    "input_tokens": 1561,
+    "output_tokens": 1074
+   },
+   "judge": {
+    "faithfulness": 5,
+    "relevance": 5,
+    "reason": "The answer accurately uses the provided passages to directly and comprehensively answer the question."
+   },
    "judge_error": null,
    "llm_error": null
   },
@@ -120,13 +228,44 @@
     "AI Act Art. 20(2)",
     "AI Act Art. 60(2)"
    ],
-   "retrieval_ms": 30.8,
+   "retrieval_ms": 64.8,
    "hit_article": true,
    "hit_paragraph": null,
    "rank_article": 4,
    "rank_paragraph": null,
-   "answer": null,
-   "judge": null,
+   "answer": {
+    "answer": "An AI system is considered to be high-risk if it is referred to in Annex III or in Article 6(1) of the AI Act [4]. Evaluating whether an AI system is classified as high-risk is based on the conditions set out in Article 6(3) and Commission guidelines [1].",
+    "language": "en",
+    "citations": [
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "6",
+      "paragraph": "2",
+      "title": "Classification rules for high-risk AI systems",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727#art_6",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "80",
+      "paragraph": "1",
+      "title": "Procedure for dealing with AI systems classified by the provider as non-high-risk in application of Annex III",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727#art_80",
+      "language": "en"
+     }
+    ],
+    "refused": false,
+    "latency_ms": 8837,
+    "input_tokens": 829,
+    "output_tokens": 951
+   },
+   "judge": {
+    "faithfulness": 5,
+    "relevance": 5,
+    "reason": "The answer accurately explains how to determine if an AI system is high-risk based directly on the provided text."
+   },
    "judge_error": null,
    "llm_error": null
   },
@@ -157,13 +296,44 @@
     "AI Act Recital 58",
     "AI Act Annex III point 5"
    ],
-   "retrieval_ms": 25.2,
+   "retrieval_ms": 50.3,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
    "rank_paragraph": 2,
-   "answer": null,
-   "judge": null,
+   "answer": {
+    "answer": "Ein KI-System, das bestimmt ist, Bewerbungen zu sichten oder zu filtern (sowie Bewerber auszuwählen oder zu bewerten), fällt grundsätzlich unter die in Anhang III aufgeführten Hochrisiko-KI-Systeme [2].\n\nEin solches System gilt jedoch abweichend davon nicht als hochriskant, wenn es kein erhebliches Risiko einer Beeinträchtigung der Gesundheit, Sicherheit oder von Grundrechten natürlicher Personen birgt (indem es etwa das Ergebnis der Entscheidungsfindung nicht wesentlich beeinflusst) und mindestens eine der folgenden Bedingungen erfüllt [1]:\n* Es führt eine eng gefasste Verfahrensaufgabe durch [1];\n* es soll das Ergebnis einer zuvor abgeschlossenen menschlichen Tätigkeit verbessern [1];\n* es dient dem Erkennen von Entscheidungsmustern/Abweichungen ohne die menschliche Bewertung ohne angemessene Überprüfung zu ersetzen oder zu beeinflussen [1]; oder\n* es führt eine vorbereitende Aufgabe für eine Bewertung durch [1].",
+    "language": "de",
+    "citations": [
+     {
+      "regulation": "AI_ACT",
+      "type": "annex",
+      "number": "III",
+      "paragraph": "4",
+      "title": "Hochrisiko-KI-Systeme gemäß Artikel 6 Absatz 2",
+      "source_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:02024R1689-20260727#anx_III",
+      "language": "de"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "6",
+      "paragraph": "3",
+      "title": "Einstufungsvorschriften für Hochrisiko-KI-Systeme",
+      "source_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:02024R1689-20260727#art_6",
+      "language": "de"
+     }
+    ],
+    "refused": false,
+    "latency_ms": 67872,
+    "input_tokens": 1509,
+    "output_tokens": 849
+   },
+   "judge": {
+    "faithfulness": 5,
+    "relevance": 5,
+    "reason": "The answer accurately states the general rule from Annex III and the potential exception from Article 6(3), fully supported by the provided text."
+   },
    "judge_error": null,
    "llm_error": null
   },
@@ -188,13 +358,62 @@
     "AI Act Recital 65",
     "AI Act Art. 8(1)"
    ],
-   "retrieval_ms": 25.5,
+   "retrieval_ms": 33.2,
    "hit_article": true,
    "hit_paragraph": null,
    "rank_article": 1,
    "rank_paragraph": null,
-   "answer": null,
-   "judge": null,
+   "answer": {
+    "answer": "Based on the provided passages, a risk management system for a high-risk AI system must be established, implemented, documented, and maintained [2] as a continuous, iterative process run throughout the system's entire lifecycle [5]. It must cover:\n\n* **Risk Identification and Mitigation:** Identifying and mitigating relevant, known, and reasonably foreseeable risks to health, safety, and fundamental rights in light of the system's intended purpose, reasonably foreseeable misuse, and interaction with its environment [5].\n* **System Testing:** Testing the AI system to identify targeted risk management measures, ensure consistent performance for its intended purpose, and ensure compliance with statutory requirements [1].\n* **Impact on Vulnerable Groups:** Considering whether the AI system is likely to have an adverse impact on persons under the age of 18 and other vulnerable groups [3].\n* **Review and State of the Art:** Adopting the most appropriate risk management measures in light of the state of the art in AI, documenting the choices made, and regularly reviewing and updating the system to ensure its continuing effectiveness [5].",
+    "language": "en",
+    "citations": [
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "9",
+      "paragraph": "1",
+      "title": "Risk management system",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727#art_9",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "65",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689#rct_65",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "9",
+      "paragraph": "6",
+      "title": "Risk management system",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727#art_9",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "9",
+      "paragraph": "9",
+      "title": "Risk management system",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727#art_9",
+      "language": "en"
+     }
+    ],
+    "refused": false,
+    "latency_ms": 23193,
+    "input_tokens": 959,
+    "output_tokens": 1401
+   },
+   "judge": {
+    "faithfulness": 5,
+    "relevance": 5,
+    "reason": "The answer directly and accurately addresses the question using only facts supported by the provided passages."
+   },
    "judge_error": null,
    "llm_error": null
   },
@@ -219,13 +438,53 @@
     "AI Act Art. 9(6)",
     "AI Act Recital 66"
    ],
-   "retrieval_ms": 29.7,
+   "retrieval_ms": 402.5,
    "hit_article": true,
    "hit_paragraph": null,
    "rank_article": 1,
    "rank_paragraph": null,
-   "answer": null,
-   "judge": null,
+   "answer": {
+    "answer": "Für die Trainings-, Validierungs- und Testdatensätze von Hochrisiko-KI-Systemen gelten folgende Qualitätsanforderungen:\n\n* Sie müssen den Qualitätskriterien gemäß Artikel 10 Absätze 2, 3 und 4 sowie Artikel 4a Absatz 1 entsprechen [1].\n* Sie müssen im Hinblick auf die Zweckbestimmung des Systems relevant, hinreichend repräsentativ und so weit wie möglich fehlerfrei und vollständig sein [2][3].\n* Sie müssen geeignete statistische Merkmale aufweisen, gegebenenfalls auch in Bezug auf die Personen oder Personengruppen, für die das System bestimmungsgemäß verwendet werden soll [2][3].",
+    "language": "de",
+    "citations": [
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "10",
+      "paragraph": "1",
+      "title": "Daten und Daten-Governance",
+      "source_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:02024R1689-20260727#art_10",
+      "language": "de"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "10",
+      "paragraph": "3",
+      "title": "Daten und Daten-Governance",
+      "source_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:02024R1689-20260727#art_10",
+      "language": "de"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "67",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R1689#rct_67",
+      "language": "de"
+     }
+    ],
+    "refused": false,
+    "latency_ms": 34249,
+    "input_tokens": 1118,
+    "output_tokens": 746
+   },
+   "judge": {
+    "faithfulness": 5,
+    "relevance": 5,
+    "reason": "The answer directly and accurately addresses the question using only facts supported by the provided passages."
+   },
    "judge_error": null,
    "llm_error": null
   },
@@ -250,13 +509,53 @@
     "AI Act Recital 178",
     "AI Act Art. 14(4)"
    ],
-   "retrieval_ms": 25.1,
+   "retrieval_ms": 436.4,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 3,
    "rank_paragraph": 6,
-   "answer": null,
-   "judge": null,
+   "answer": {
+    "answer": "Based on the provided passages, natural persons overseeing a high-risk AI system should be able to:\n\n* **Oversee functioning and impact:** Effectively oversee the system's functioning while it is in use [3], ensure it is used as intended, and address its impacts over its lifecycle [2].\n* **Make informed intervention decisions:** Decide if, when, and how to intervene in order to avoid negative consequences or risks, or stop the system if it fails to perform as intended [2].\n* **Intervene or halt the system:** Intervene in the operation of the system or interrupt it using a ‘stop’ button or a similar procedure that brings the system to a halt in a safe state [6].",
+    "language": "en",
+    "citations": [
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "14",
+      "paragraph": "1",
+      "title": "Human oversight",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727#art_14",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "73",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689#rct_73",
+      "language": "en"
+     },
+     {
+      "regulation": "AI_ACT",
+      "type": "article",
+      "number": "14",
+      "paragraph": "4",
+      "title": "Human oversight",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727#art_14",
+      "language": "en"
+     }
+    ],
+    "refused": false,
+    "latency_ms": 37295,
+    "input_tokens": 936,
+    "output_tokens": 992
+   },
+   "judge": {
+    "faithfulness": 5,
+    "relevance": 5,
+    "reason": "The answer accurately summarizes the capabilities required for individuals overseeing high-risk AI systems directly from the provided text."
+   },
    "judge_error": null,
    "llm_error": null
   },
@@ -281,13 +580,35 @@
     "AI Act Art. 5(1)",
     "AI Act Art. 50(3)"
    ],
-   "retrieval_ms": 27.1,
+   "retrieval_ms": 67.7,
    "hit_article": true,
    "hit_paragraph": false,
    "rank_article": 6,
    "rank_paragraph": null,
-   "answer": null,
-   "judge": null,
+   "answer": {
+    "answer": "Bei KI-Systemen, die mit natürlichen Personen interagieren, sollte natürlichen Personen grundsätzlich mitgeteilt werden, dass sie es mit einem KI-System zu tun haben [1]. \n\nDies ist jedoch nicht erforderlich, wenn dies aus Sicht einer angemessen informierten, aufmerksamen und verständigen natürlichen Person aufgrund der Umstände und des Kontexts der Nutzung bereits offensichtlich ist [1]. Zudem gibt es punktuelle Ausnahmen für besondere Erfordernisse der Strafverfolgung [1]. Bei der Umsetzung dieser Pflicht sind zudem die Merkmale von schutzbedürftigen Personen (aufgrund von Alter oder Behinderung) zu berücksichtigen, sofern das System auch mit diesen interagieren soll [1].",
+    "language": "de",
+    "citations": [
+     {
+      "regulation": "AI_ACT",
+      "type": "recital",
+      "number": "132",
+      "paragraph": null,
+      "title": null,
+      "source_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R1689#rct_132",
+      "language": "de"
+     }
+    ],
+    "refused": false,
+    "latency_ms": 20236,
+    "input_tokens": 1555,
+    "output_tokens": 823
+   },
+   "judge": {
+    "faithfulness": 5,
+    "relevance": 5,
+    "reason": "The answer accurately reflects Erwägungsgrund 132 from the provided passages and directly answers the question regarding informing users about interacting with an AI."
+   },
    "judge_error": null,
    "llm_error": null
   },
@@ -312,7 +633,7 @@
     "AI Act Recital 17",
     "AI Act Art. 50(7)"
    ],
-   "retrieval_ms": 26.0,
+   "retrieval_ms": 57.4,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
@@ -320,7 +641,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q10",
@@ -343,7 +664,7 @@
     "AI Act Art. 26(8)",
     "AI Act Art. 13(1)"
    ],
-   "retrieval_ms": 26.9,
+   "retrieval_ms": 55.8,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
@@ -351,7 +672,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q11",
@@ -374,7 +695,7 @@
     "AI Act Recital 59",
     "AI Act Recital 28"
    ],
-   "retrieval_ms": 25.2,
+   "retrieval_ms": 31.3,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
@@ -382,7 +703,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q12",
@@ -405,7 +726,7 @@
     "AI Act Art. 55(1)",
     "AI Act Art. 91(1)"
    ],
-   "retrieval_ms": 24.5,
+   "retrieval_ms": 26.5,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 2,
@@ -413,7 +734,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q13",
@@ -436,7 +757,7 @@
     "AI Act Art. 92(5)",
     "AI Act Recital 23"
    ],
-   "retrieval_ms": 25.8,
+   "retrieval_ms": 26.4,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
@@ -444,7 +765,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q14",
@@ -467,7 +788,7 @@
     "AI Act Art. 3(66)",
     "AI Act Art. 1(2)"
    ],
-   "retrieval_ms": 24.2,
+   "retrieval_ms": 24.4,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 2,
@@ -475,7 +796,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q15",
@@ -498,7 +819,7 @@
     "AI Act Art. 60(7)",
     "AI Act Recital 155"
    ],
-   "retrieval_ms": 28.6,
+   "retrieval_ms": 28.1,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
@@ -506,7 +827,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q16",
@@ -529,7 +850,7 @@
     "AI Act Recital 10",
     "GDPR Recital 1"
    ],
-   "retrieval_ms": 25.0,
+   "retrieval_ms": 27.4,
    "hit_article": false,
    "hit_paragraph": false,
    "rank_article": null,
@@ -537,7 +858,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q17",
@@ -560,7 +881,7 @@
     "GDPR Art. 17(2)",
     "GDPR Art. 34(1)"
    ],
-   "retrieval_ms": 28.3,
+   "retrieval_ms": 29.5,
    "hit_article": true,
    "hit_paragraph": false,
    "rank_article": 5,
@@ -568,7 +889,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q18",
@@ -591,7 +912,7 @@
     "GDPR Art. 65(6)",
     "GDPR Recital 87"
    ],
-   "retrieval_ms": 24.1,
+   "retrieval_ms": 26.3,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
@@ -599,7 +920,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q19",
@@ -622,7 +943,7 @@
     "GDPR Recital 32",
     "AI Act Art. 60(5)"
    ],
-   "retrieval_ms": 25.6,
+   "retrieval_ms": 25.7,
    "hit_article": true,
    "hit_paragraph": null,
    "rank_article": 1,
@@ -630,7 +951,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q20",
@@ -661,7 +982,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q21",
@@ -684,7 +1005,7 @@
     "AI Act Recital 10",
     "AI Act Art. 71(5)"
    ],
-   "retrieval_ms": 24.8,
+   "retrieval_ms": 28.8,
    "hit_article": false,
    "hit_paragraph": false,
    "rank_article": null,
@@ -692,7 +1013,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q22",
@@ -715,7 +1036,7 @@
     "GDPR Recital 39",
     "AI Act Art. 71(5)"
    ],
-   "retrieval_ms": 24.7,
+   "retrieval_ms": 25.8,
    "hit_article": false,
    "hit_paragraph": null,
    "rank_article": null,
@@ -723,7 +1044,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q23",
@@ -746,7 +1067,7 @@
     "GDPR Art. 35(8)",
     "GDPR Art. 35(10)"
    ],
-   "retrieval_ms": 24.8,
+   "retrieval_ms": 24.9,
    "hit_article": true,
    "hit_paragraph": null,
    "rank_article": 1,
@@ -754,7 +1075,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q24",
@@ -777,7 +1098,7 @@
     "AI Act Art. 50(2)",
     "AI Act Art. 25(2)"
    ],
-   "retrieval_ms": 27.4,
+   "retrieval_ms": 29.8,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 2,
@@ -785,7 +1106,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q25",
@@ -808,7 +1129,7 @@
     "AI Act Art. 100(7)",
     "AI Act Recital 168"
    ],
-   "retrieval_ms": 25.4,
+   "retrieval_ms": 25.1,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 2,
@@ -816,7 +1137,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q26",
@@ -839,7 +1160,7 @@
     "GDPR Recital 65",
     "GDPR Art. 6(1)"
    ],
-   "retrieval_ms": 26.2,
+   "retrieval_ms": 27.4,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
@@ -847,7 +1168,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q27",
@@ -878,7 +1199,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q28",
@@ -901,7 +1222,7 @@
     "GDPR Art. 45(1)",
     "GDPR Art. 45(4)"
    ],
-   "retrieval_ms": 29.9,
+   "retrieval_ms": 31.6,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 2,
@@ -909,7 +1230,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q29",
@@ -932,7 +1253,7 @@
     "GDPR Recital 81",
     "GDPR Recital 95"
    ],
-   "retrieval_ms": 26.6,
+   "retrieval_ms": 26.3,
    "hit_article": true,
    "hit_paragraph": false,
    "rank_article": 1,
@@ -940,7 +1261,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q30",
@@ -963,7 +1284,7 @@
     "GDPR Art. 35(1)",
     "AI Act Art. 54(6)"
    ],
-   "retrieval_ms": 25.6,
+   "retrieval_ms": 28.5,
    "hit_article": false,
    "hit_paragraph": false,
    "rank_article": null,
@@ -971,7 +1292,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q31",
@@ -1000,7 +1321,7 @@
     "AI Act Recital 35",
     "AI Act Art. 86(2)"
    ],
-   "retrieval_ms": 25.7,
+   "retrieval_ms": 25.9,
    "hit_article": true,
    "hit_paragraph": false,
    "rank_article": 6,
@@ -1008,7 +1329,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q32",
@@ -1031,7 +1352,7 @@
     "AI Act Recital 58",
     "AI Act Art. 13(1)"
    ],
-   "retrieval_ms": 27.9,
+   "retrieval_ms": 29.1,
    "hit_article": true,
    "hit_paragraph": false,
    "rank_article": 1,
@@ -1039,7 +1360,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q33",
@@ -1062,7 +1383,7 @@
     "AI Act Art. 59(2)",
     "AI Act Art. 57(10)"
    ],
-   "retrieval_ms": 30.3,
+   "retrieval_ms": 24.8,
    "hit_article": false,
    "hit_paragraph": false,
    "rank_article": null,
@@ -1070,7 +1391,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q34",
@@ -1099,7 +1420,7 @@
     "AI Act Annex VIII point C.5",
     "AI Act Recital 96"
    ],
-   "retrieval_ms": 29.7,
+   "retrieval_ms": 29.3,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
@@ -1107,7 +1428,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q35",
@@ -1130,7 +1451,7 @@
     "GDPR Art. 35(4)",
     "GDPR Recital 84"
    ],
-   "retrieval_ms": 24.3,
+   "retrieval_ms": 25.4,
    "hit_article": true,
    "hit_paragraph": true,
    "rank_article": 1,
@@ -1138,7 +1459,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q36",
@@ -1154,7 +1475,7 @@
     "GDPR Art. 83(5)",
     "GDPR Art. 70(1)"
    ],
-   "retrieval_ms": 24.3,
+   "retrieval_ms": 24.6,
    "hit_article": null,
    "hit_paragraph": null,
    "rank_article": null,
@@ -1162,7 +1483,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q37",
@@ -1178,7 +1499,7 @@
     "AI Act Recital 156",
     "AI Act Art. 77(1)"
    ],
-   "retrieval_ms": 24.0,
+   "retrieval_ms": 25.2,
    "hit_article": null,
    "hit_paragraph": null,
    "rank_article": null,
@@ -1186,7 +1507,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q38",
@@ -1202,7 +1523,7 @@
     "AI Act Art. 99(5)",
     "GDPR Art. 83(6)"
    ],
-   "retrieval_ms": 23.0,
+   "retrieval_ms": 23.6,
    "hit_article": null,
    "hit_paragraph": null,
    "rank_article": null,
@@ -1210,7 +1531,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q39",
@@ -1226,7 +1547,7 @@
     "GDPR Recital 137",
     "AI Act Art. 36(5)"
    ],
-   "retrieval_ms": 23.8,
+   "retrieval_ms": 26.0,
    "hit_article": null,
    "hit_paragraph": null,
    "rank_article": null,
@@ -1234,7 +1555,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   },
   {
    "id": "q40",
@@ -1250,7 +1571,7 @@
     "AI Act Recital 111",
     "AI Act Art. 90(2)"
    ],
-   "retrieval_ms": 23.8,
+   "retrieval_ms": 24.0,
    "hit_article": null,
    "hit_paragraph": null,
    "rank_article": null,
@@ -1258,7 +1579,7 @@
    "answer": null,
    "judge": null,
    "judge_error": null,
-   "llm_error": null
+   "llm_error": "skipped after provider error: GoogleRateLimitError: Error calling model 'gemini-3.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. Fo"
   }
  ]
 }
